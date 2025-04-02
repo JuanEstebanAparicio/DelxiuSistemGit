@@ -1,0 +1,272 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante</title>
+</head>
+<style>
+    body {
+    background-color: white;
+    color: black;
+    transition: background-color 0.5s, color 0.5s;
+}
+.dark-mode {
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+.background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .floating-image {
+            position: absolute;
+            width: 50px;
+            height: auto;
+            opacity: 0.8;
+            animation: floatDown 0.5s infinite linear;
+        }
+       
+        .dark-mode .floating-image {
+            filter: brightness(0.8);
+        }
+       
+        @keyframes floatDown {
+            from { transform: translateY(-10vh);}
+            to { transform: translateY(120vh);}
+        }
+        @keyframes floatUp {
+            from { transform: translateY(120vh); }
+            to { transform: translateY(-10vh); }
+}
+
+
+   .theme_toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 60px; /* Aumentamos el tamaño */
+    height: 60px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.theme_toggle img {
+    width: 100%;
+    height: 100%;
+}
+
+#logo {
+            transition: opacity 0.5s ease-in-out;
+            width: 300px;  /* Ajusta este valor según el tamaño que desees */
+            height: auto;  /* Mantiene la proporción de la imagen */
+        }
+        .purple-text {
+    font-size: 50px;
+    font-weight: bold;
+    color: purple;
+}
+
+.gradient-purple {
+    font-size: 30px;
+    font-weight: bold;
+    background: linear-gradient(to right, #2a52aa, #DA70D6, #8A2BE2);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+.elegant-link {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.5s, transform 0.2s;
+            background-color: blue;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 255, 0.4);
+        }
+
+        .elegant-link:hover {
+            transform: scale(1.1);
+        }
+
+        .dark-mode .elegant-link {
+            background-color: purple;
+            box-shadow: 0 4px 10px rgba(128, 0, 128, 0.5);
+        }
+
+/* Animación para la luna */
+@keyframes moonToSun {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    50% { transform: translate(40px, 80px) scale(1.5); opacity: 0.5; }
+    100% { transform: translate(80px, 160px) scale(2); opacity: 0; }
+}
+
+/* Animación para el sol (sin rotación) */
+@keyframes sunFromBottom {
+    0% { transform: translate(-80px, 160px) scale(2); opacity: 0; }
+    50% { transform: translate(-40px, 80px) scale(1.5); opacity: 0.5; }
+    100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+/* Animación inversa para volver a la luna (sin rotación) */
+@keyframes sunToMoon {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    50% { transform: translate(-40px, 80px) scale(1.5); opacity: 0.5; }
+    100% { transform: translate(-80px, 160px) scale(2); opacity: 0; }
+}
+
+/* Animación para que la luna regrese (sin rotación) */
+@keyframes moonFromTop {
+    0% { transform: translate(80px, 160px) scale(2); opacity: 0; }
+    50% { transform: translate(40px, 80px) scale(1.5); opacity: 0.5; }
+    100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+</style>
+<br>
+<br>
+<center>
+
+<body>
+<button class="theme_toggle" id="themeButton">
+<img src="../Media/LunarisLunerita.png" id="themeIcon" alt="LunaNegra">
+</button>
+<div class="background-container" id="backgroundContainer"></div>
+ <br>
+ <br>
+ <br>
+<script>
+function createFloatingImages() {
+    const container = document.getElementById("backgroundContainer");
+
+    const imagePathsLight = ["../Media/chile2.png", "../Media/taco2.png", "../Media/Leche2.png", "../Media/Empanada2.png", "../Media/Bebida.png"];
+    const imagePathsDark = ["../Media/chiledrk.png", "../Media/tacodrk.png", "../Media/lechedrk.png", "../Media/empanadadrk.png"];
+
+    function addImage() {
+        const img = document.createElement("img");
+        img.classList.add("floating-image");
+
+        const isDarkMode = document.body.classList.contains("dark-mode");
+        const images = isDarkMode ? imagePathsDark : imagePathsLight;
+
+        img.src = images[Math.floor(Math.random() * images.length)];
+        img.style.left = `${Math.random() * window.innerWidth}px`; // Posición horizontal aleatoria
+
+        let animationDuration = Math.random() * 0 + 4; // Duración entre 6s y 10s
+
+        if (Math.random() < 0.5) { 
+            img.style.animation = `floatUp ${animationDuration}s linear`;
+            img.style.bottom = "100%"; 
+        } else { 
+            img.style.animation = `floatDown ${animationDuration}s linear`;
+            img.style.top = "-110px";  
+        }
+
+        container.appendChild(img);
+
+        // Eliminar imagen cuando termine la animación
+        setTimeout(() => {
+            img.remove();
+        }, animationDuration * 1000);
+    }
+
+    setInterval(addImage, 500); // Aparece una imagen cada 1.2s
+}
+
+createFloatingImages();
+
+</script>
+
+    <h1>BIENVENIDO A </h1>
+       <img src="../Media/DelixiuSistem.png" id="logo"class="logo">
+        <br>
+        <br>
+
+        <p  class="gradient-purple">La mejor experiencia gastronómica para tu paladar"</p>
+        
+        <a href="file:///C:/Users/juana/OneDrive/Escritorio/DelixiusSistem/View/Empezar.html" class="elegant-link">EMPEZAR</a>
+        
+    </div>
+</center>
+
+    <script>
+const themeButton = document.getElementById("themeButton");
+const logo = document.getElementById("logo");
+const themeIcon = document.getElementById("themeIcon");
+const body = document.body
+const backgroundContainer = document.getElementById("backgroundContainer");
+
+const moonIcon = "../Media/LunarisLunerita.png"; // Luna
+const sunIcon = "https://cdn-icons-png.flaticon.com/512/869/869869.png"; // Sol
+const logoClaro ="../Media/DelixiuSistem.png";
+const logoOscuro ="../Media/DelixiuSistemDark2.png";
+
+let isAnimating = false;
+
+
+
+function applySavedTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark-mode") {
+        body.classList.add("dark-mode");
+        themeIcon.src = sunIcon; // Muestra el sol
+        logo.src = logoOscuro;
+    } else {
+        body.classList.remove("dark-mode");
+        themeIcon.src = moonIcon; // Muestra la luna
+        logo.src = logoClaro;
+    }
+}
+
+// **Aplica el tema guardado cuando la página carga**
+applySavedTheme();
+
+themeButton.addEventListener("click", () => {
+    if (isAnimating) return; // Evita múltiples clics rápidos
+    isAnimating = true;
+
+    if (body.classList.contains("dark-mode")) {
+        // Volver a modo claro (Sol -> Luna)
+        themeIcon.style.animation = "sunToMoon 0.5s forwards ease-in-out";
+        setTimeout(() => {
+            themeIcon.src = moonIcon;
+            themeIcon.style.animation = "moonFromTop 0.5s forwards ease-in-out";
+        }, 500);
+        
+        setTimeout(() => {
+            logo.src = logoClaro;
+            body.classList.remove("dark-mode");
+            localStorage.setItem("theme", "light-mode"); // Guarda el tema en localStorage
+        }, 600);
+    } else {
+        // Cambiar a modo oscuro (Luna -> Sol)
+        themeIcon.style.animation = "moonToSun 0.5s forwards ease-in-out";
+        setTimeout(() => {
+            themeIcon.src = sunIcon;
+            themeIcon.style.animation = "sunFromBottom 0.5s forwards ease-in-out";
+        }, 500);
+        
+        setTimeout(() => {
+            logo.src = logoOscuro;
+            body.classList.add("dark-mode");
+            localStorage.setItem("theme", "dark-mode"); // Guarda el tema en localStorage
+        }, 600); 
+    }
+
+    setTimeout(() => {
+        isAnimating = false; // Permite nuevos clics después de la animación
+    }, 1000);
+});
+
+    </script>
+</body>
+</html>
