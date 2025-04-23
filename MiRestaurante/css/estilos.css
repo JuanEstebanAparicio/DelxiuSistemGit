@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #fff4e6, #ffe5b4);
+    color: #333;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .top-bar {
+    background-color: #e67e22;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
+    position: relative;
+    border-bottom: 3px solid #d35400;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .azul {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+  }
+  
+  .verde {
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+  }
+  
+  .btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  
+  .config-container {
+    margin-left: auto;
+    position: relative;
+  }
+  
+  .engranaje {
+    background: #34495e;
+    color: white;
+    font-size: 1.5em;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.5s ease;
+  }
+  
+  .engranaje:hover {
+    transform: rotate(180deg);
+  }
+  
+  .config-menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fffaf0;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    z-index: 999;
+  }
+  
+  .config-menu a {
+    padding: 10px 15px;
+    color: #2c3e50;
+    text-decoration: none;
+    border-bottom: 1px solid #ecf0f1;
+  }
+  
+  .config-menu a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .contenido {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  
+  .logo h1 {
+    font-size: 3em;
+    margin-top: 30px;
+    color: #c0392b;
+  }
+  
+  .usuario {
+    color: #8e44ad;
+  }
+  .frase-bienvenida {
+    margin-top: 40px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffe5b4, #ffd1dc);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    color: #4b2e83;
+    font-size: 1.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  
