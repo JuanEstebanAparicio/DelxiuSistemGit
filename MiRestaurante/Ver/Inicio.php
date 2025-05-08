@@ -1,9 +1,13 @@
 <?php
 session_start();
+include("../auth/conexion.php");
 if (!isset($_SESSION['correo'])) {
+
     header("Location: ../Ver/Login.php");
     exit();
+
 }
+$_SESSION['desde_panel_inicio'] = true;
 
 $correo = $_SESSION['correo'];
 
@@ -14,14 +18,16 @@ if ($conexion->connect_error) {
 }
 
 // Consulta para obtener el nombre usando el correo
-$sql = "SELECT nombre_usuario FROM usuarios WHERE correo = ?";
+$sql = "SELECT id ,nombre_usuario FROM usuarios WHERE correo = ?";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("s", $correo);
 $stmt->execute();
-$stmt->bind_result($nombre);
+$stmt->bind_result($id_usuario, $nombre);
 $stmt->fetch();
 $stmt->close();
 $conexion->close();
+
+$_SESSION['id'] = $id_usuario;
 ?>
 
 <!DOCTYPE html>
@@ -31,19 +37,27 @@ $conexion->close();
   <title>Página Principal</title>
   <link rel="stylesheet" href="../css/estilos.css">
   <script src="../js/funcionalidad.js" defer></script>
+<style>
+  #fraseBienvenida {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>
+
 </head>
 <body>
 
   <header class="top-bar">
     <a href=""></a>
+    <a href="#" class="btn amarillo">Inicio</a>
     <a href="#" class="btn azul">Próximamente</a>
     <a href="../front_principal/registro_ingrediente.php" class="btn verde">Inventario</a>
 
     <div class="config-container">
       <button class="engranaje" onclick="toggleMenu()">⚙️</button>
       <div class="config-menu" id="configMenu">
-        <a href="#" onclick="toggleDarkMode()">🌓 Cambiar Tema</a>
-        <a href="../logout.php">🚪 Cerrar Sesión</a>
+       <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
+        <a href="../php/logout.php">🚪 Cerrar Sesión</a>
       </div>
     </div>
   </header>
@@ -61,14 +75,16 @@ $conexion->close();
   <!-- GSAP y tu animación personalizada -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
+  document.addEventListener("DOMContentLoaded", function() {
     gsap.to("#fraseBienvenida", {
       duration: 1.2,
       y: 0,
       opacity: 1,
-      ease: "power2.out"
+      ease: "power2.out",
+      delay: 0.5
     });
-  </script>
-
+  });
+</script>
 </body>
 </html>
 

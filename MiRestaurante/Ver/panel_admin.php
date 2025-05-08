@@ -1,6 +1,11 @@
 <?php
 // panel_admin.php
 session_start();
+if (!isset($_SESSION['correo'])) {
+    header("Location: ../Ver/Login.php");
+    exit();
+}
+
 
 // === CONEXIÓN A LA BASE DE DATOS ===
 $conexion = new mysqli("localhost", "root", "", "restaurante",3307); // ← Cambia el nombre de la base
@@ -119,7 +124,7 @@ $resultado = $conexion->query($sql);
 </head>
 <body>
 <center>
-<a href="../Ver/Login.php">Volver</a>
+<a href="../php/logout.php">Volver</a>
 </center>
 <br>
     <div class="contenedor">

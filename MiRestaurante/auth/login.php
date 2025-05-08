@@ -34,7 +34,7 @@ if ($resultado->num_rows === 1) {
         $_SESSION['usuario'] = $fila['nombre_usuario'];
         $_SESSION['restaurante'] = $fila['nombre_restaurante'];
         $_SESSION['correo'] = $fila['correo']; // esto es importante para validar si es admin
-
+        $_SESSION['id_usuario'] = $fila['id'];
         // Redirigir según si es administrador o usuario normal
         if ($correo === 'admin@gmail.com') {
             header("Location: ../Ver/panel_admin.php");
