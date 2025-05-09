@@ -13,6 +13,13 @@ $id_usuario = $_SESSION['id_usuario'];
 $resultado_filtrado = construirFiltroInventario($conexion, $id_usuario);
 $resultado = $resultado_filtrado;
 
+$contador = [
+  'activo' => 0,
+  'agotado' => 0,
+  'vencido' => 0,
+  'bajo-stock' => 0,
+  'no-disponible' => 0
+];
 ?>
 
 
@@ -34,6 +41,16 @@ $resultado = $resultado_filtrado;
   <link rel="stylesheet" href="../css/estilos.css">
   <script src="../js/funcionalidad.js" defer></script>
   <script src="../js/gestion_ingredientes.js" defer></script>
+
+  <!-- Librerias datatable export -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
   <style>
     /* Fondo oscuro de fondo del modal */
     .modal {
@@ -269,7 +286,9 @@ $resultado = $resultado_filtrado;
   <div><span class="cuadro no-disponible"></span> No disponible</div>
 </div>
 <div class="scroll-horizontal">
-<table id="tablaInventario" class="display">
+
+
+<table id="tablaInventario" class="display nowrap" style="width:100%">
   
 <thead>
     <tr>
@@ -293,14 +312,6 @@ $resultado = $resultado_filtrado;
   
   <?php while ($row = $resultado->fetch_assoc()): 
  
- $contador = [
-  'activo' => 0,
-  'agotado' => 0,
-  'vencido' => 0,
-  'bajo-stock' => 0,
-  'no-disponible' => 0
-];
-
       $fecha_actual = date('Y-m-d');
       $fecha_vencimiento = $row['fecha_vencimiento'];
       $cantidad = floatval($row['cantidad']);
@@ -343,6 +354,9 @@ $resultado = $resultado_filtrado;
         } else {
           $clase_fila = '';
         }
+      }
+      if (isset($contador[$clase_fila])) {
+        $contador[$clase_fila]++;
       }
     }
     ?>
@@ -435,6 +449,14 @@ function recalcularTotal(elemento) {
       <?php endwhile; ?>
 
   </tbody>
+  <div class="estado-resumen mb-3" style="display: flex; gap: 2rem; flex-wrap: wrap; font-weight: bold;">
+  <div style="color: #c62828;">🟥 Vencidos: <?= $contador['vencido'] ?></div>
+  <div style="color: #616161;">⬛ Agotados: <?= $contador['agotado'] ?></div>
+  <div style="color: #fbc02d;">🟨 Bajo stock: <?= $contador['bajo-stock'] ?></div>
+  <div> Activos: <?= $contador['activo'] ?></div>
+  <div style="color: #546e7a;">⬜ No disponibles: <?= $contador['no-disponible'] ?></div>
+</div>
+
   <style>
 .vencido {
   background-color: #d32f2f !important;
@@ -457,6 +479,10 @@ function recalcularTotal(elemento) {
 }
 </style>
 </table>
+<script>
+
+</script>
+
 
 <script>
 function filtrarPorEstado() {
@@ -476,8 +502,32 @@ function filtrarPorEstado() {
 
 </div>
 <script>
-  $(document).ready(function() {
-    const table = $('#tablaInventario').DataTable({
+let tabla;
+$(document).ready(function () {
+  if (!$.fn.DataTable.isDataTable('#tablaInventario')) {
+    tabla = $('#tablaInventario').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'excelHtml5',
+          title: 'Inventario',
+          className: 'btn btn-success',
+          text: '📊 Excel'
+        },
+        {
+          extend: 'pdfHtml5',
+          title: 'Inventario',
+          orientation: 'landscape',
+          pageSize: 'A4',
+          className: 'btn btn-danger',
+          text: '📄 PDF'
+        },
+        {
+          extend: 'print',
+          className: 'btn btn-secondary',
+          text: '🖨 Imprimir'
+        }
+      ],
       language: {
         url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
       },
@@ -485,24 +535,30 @@ function filtrarPorEstado() {
       pageLength: 25
     });
 
+    // Filtros personalizados
     $('#filtroCategoria').on('change', function () {
       let val = $(this).val();
       if (val === 'otro') {
-        table.column(3).search('^(?!Verduras|Frutas|Lácteos|Carnes|Cereales y granos|Panadería|Enlatados|Especias|Snacks|Bebidas).*$', true, false).draw();
+        tabla.column(3).search('^(?!Verduras|Frutas|Lácteos|Carnes|Cereales y granos|Panadería|Enlatados|Especias|Snacks|Bebidas).*$', true, false).draw();
       } else {
-        table.column(3).search(val).draw();
+        tabla.column(3).search(val).draw();
       }
     });
 
     $('#filtroUnidad').on('change', function () {
       let val = $(this).val();
       if (val === 'otro') {
-        table.column(2).search('^(?!kg|g|l|ml|unidades).*$', true, false).draw();
+        tabla.column(2).search('^(?!kg|g|l|ml|unidades).*$', true, false).draw();
       } else {
-        table.column(2).search(val).draw();
+        tabla.column(2).search(val).draw();
       }
     });
-  });
+
+    $('#exportarBtn').on('click', function () {
+      tabla.button('.buttons-excel').trigger();
+    });
+  }
+});
 </script>
 
 
@@ -520,10 +576,10 @@ function filtrarPorEstado() {
       <input type="text" id="edit_nombre" name="nombre" required maxlength="100">
 
       <label for="edit_cantidad">Cantidad</label>
-      <input type="number" id="edit_cantidad" name="cantidad" step="0.01"  max="100000" required>
+      <input type="number" id="edit_cantidad" name="cantidad" step="0.01" required>
 
       <label for="edit_cantidad_minima">Cantidad mínima</label>
-      <input type="number" id="edit_cantidad_minima" name="cantidad_minima" step="0.01" min="0" max="10000" required>
+      <input type="number" id="edit_cantidad_minima" name="cantidad_minima" step="0.01" min="0" required>
 
       <label for="edit_unidad_medida">Unidad de medida</label>
       <select id="edit_unidad_medida" name="unidad_medida" onchange="togglePersonalizado('edit_unidad_medida','edit_unidad_personalizada')" required>
@@ -538,7 +594,7 @@ function filtrarPorEstado() {
       <input type="text" id="edit_unidad_personalizada" name="unidad_personalizada" placeholder="Unidad personalizada" style="display:none;" maxlength="50">
 
       <label for="edit_costo_unitario">Costo unitario ($)</label>
-      <input type="number" id="edit_costo_unitario" name="costo_unitario" step="0.01" min="0" max="100000" required>
+      <input type="number" id="edit_costo_unitario" name="costo_unitario" step="0.01" min="0" required>
 
       <label for="edit_categoria">Categoría</label>
       <select id="edit_categoria" name="categoria" onchange="togglePersonalizado('edit_categoria','edit_categoria_personalizada')" required>
@@ -709,8 +765,6 @@ function togglePersonalizado(selectId, inputId) {
   });
 </script>
 <!--==================================================================================== -->
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

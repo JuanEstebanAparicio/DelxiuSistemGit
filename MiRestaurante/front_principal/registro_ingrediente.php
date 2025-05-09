@@ -85,10 +85,10 @@
   <input type="text" id="nombre" name="nombre" required maxlength="100" placeholder="Ej: Tomate">
 
   <label for="cantidad">Cantidad</label>
-  <input type="number" id="cantidad" name="cantidad" step="0.01" min="0.01" max="100000" required>
+  <input type="number" id="cantidad" name="cantidad" step="0.01" min="0.01" required>
 
   <label for="cantidad_minima">Cantidad mínima (Se avisara cuando la cantidad este por debajo de esta)</label>
-  <input type="number" id="cantidad_minima" name="cantidad_minima" step="0.01" min="0" max="10000" required>
+  <input type="number" id="cantidad_minima" name="cantidad_minima" step="0.01" min="0.01" required>
 
   <label for="unidad_medida">Unidad de medida</label>
   <select name="unidad_medida" id="unidad_medida" onchange="togglePersonalizado('unidad_medida','unidad_personalizada')" required>
@@ -103,7 +103,7 @@
   <input type="text" name="unidad_personalizada" id="unidad_personalizada" placeholder="Unidad personalizada" style="display:none;" maxlength="50">
 
   <label for="costo_unitario">Costo unitario ($)</label>
-  <input type="number" id="costo_unitario" name="costo_unitario" step="0.01" min="0" max="100000" required>
+  <input type="number" id="costo_unitario" name="costo_unitario" step="0.01" min="0.01" required>
 
   <label for="categoria">Categoría</label>
   <select name="categoria" id="categoria" onchange="togglePersonalizado('categoria','categoria_personalizada')" required>

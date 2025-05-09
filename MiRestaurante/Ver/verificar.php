@@ -144,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="alerta">
         <h2>Codigo Incorrecto</h2>
         <p>Verifique bien y vuelva a ingresarlo.</p>
+        <p>En caso de que su correo este correcto simplemente vuelva a interntar en 30 minutos.</p>
         <a href="javascript:history.back()">Volver a ingresar</a>
     </div>
 </body>
