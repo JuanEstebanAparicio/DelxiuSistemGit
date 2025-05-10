@@ -479,10 +479,6 @@ function recalcularTotal(elemento) {
 }
 </style>
 </table>
-<script>
-
-</script>
-
 
 <script>
 function filtrarPorEstado() {
@@ -507,6 +503,7 @@ $(document).ready(function () {
   if (!$.fn.DataTable.isDataTable('#tablaInventario')) {
     tabla = $('#tablaInventario').DataTable({
       dom: 'Bfrtip',
+      scrollX: true,
       buttons: [
         {
           extend: 'excelHtml5',
@@ -516,16 +513,70 @@ $(document).ready(function () {
         },
         {
           extend: 'pdfHtml5',
-          title: 'Inventario',
+          title: 'Inventario de Ingredientes',
           orientation: 'landscape',
           pageSize: 'A4',
+          exportOptions: {
+            columns: ':not(:last-child)' // ocultar la columna de acciones
+          },
+          customize: function (doc) {
+             const now = new Date();
+             const fecha = now.toLocaleDateString('es-ES');
+             const hora = now.toLocaleTimeString('es-ES');
+             const fechaHora = `Fecha del reporte: ${fecha} - ${hora}`;
+            doc.styles.tableHeader.fillColor = '#343a40';
+            doc.styles.tableHeader.color = '#ffffff';
+            doc.styles.tableHeader.alignment = 'center';
+            doc.defaultStyle.fontSize = 7;
+            doc.styles.header = {
+              fontSize: 14,
+              bold: true
+            };
+
+            const widths = [
+              40, 25, 30, 35, 35, 35, 30, 40, 35, 80, 50, 30, 40
+            ];
+            doc.content[1].table.widths = widths;
+             
+
+            doc.content[1].alignment = 'center';
+
+            doc.content[1].layout = {
+              paddingLeft: () => 2,
+              paddingRight: () => 2,
+              paddingTop: () => 2,
+              paddingBottom: () => 2
+            };
+
+            doc.content.unshift({
+          text: fechaHora,
+          alignment: 'center',
+          margin: [0, 0, 0, 5],
+          fontSize: 8
+           });
+
+            doc.content.unshift({
+              text: 'Reporte de Inventario de Ingredientes',
+              style: 'header',
+              alignment: 'center',
+              margin: [0, 0, 0, 10]
+            });
+          
+          
+          
+          },
+
+          
           className: 'btn btn-danger',
           text: '📄 PDF'
         },
         {
           extend: 'print',
           className: 'btn btn-secondary',
-          text: '🖨 Imprimir'
+          text: '🖨 Imprimir',
+          exportOptions: {
+            columns: ':not(:last-child)'
+          }
         }
       ],
       language: {
@@ -629,7 +680,7 @@ $(document).ready(function () {
       <input type="text" id="edit_lote" name="lote" maxlength="100">
 
       <label for="edit_descripcion">Descripción</label>
-      <textarea id="edit_descripcion" name="descripcion" rows="3" maxlength="300"></textarea>
+      <textarea id="edit_descripcion" name="descripcion" rows="3"></textarea>
 
       <label for="edit_ubicacion_almacen">Ubicación en almacén</label>
       <input type="text" id="edit_ubicacion_almacen" name="ubicacion_almacen" maxlength="100">

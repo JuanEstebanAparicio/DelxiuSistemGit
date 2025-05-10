@@ -138,7 +138,7 @@
   <input type="text" id="lote" name="lote" maxlength="100">
 
   <label for="descripcion">Descripción</label>
-  <textarea id="descripcion" name="descripcion" rows="3" maxlength="300"></textarea>
+  <textarea id="descripcion" name="descripcion" rows="3"></textarea>
 
   <label for="ubicacion_almacen">Ubicación en almacén</label>
   <input type="text" id="ubicacion_almacen" name="ubicacion_almacen" maxlength="100">
