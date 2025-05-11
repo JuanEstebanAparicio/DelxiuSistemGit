@@ -23,6 +23,14 @@ $consulta->bind_result($nombre, $cantidad, $lote, $fecha_vencimiento);
 $consulta->fetch();
 $consulta->close();
 
+// 📌 NUEVO: Borrar imagen si existe físicamente
+if (!empty($foto)) {
+  $ruta_foto = "../uploads/" . $foto;
+  if (file_exists($ruta_foto)) {
+    unlink($ruta_foto);
+  }
+}
+
 // Eliminar ingrediente
 $eliminar = $conexion->prepare("DELETE FROM inventario WHERE id_Ingrediente = ? AND usuario_id = ?");
 $eliminar->bind_param("ii", $id, $id_usuario);

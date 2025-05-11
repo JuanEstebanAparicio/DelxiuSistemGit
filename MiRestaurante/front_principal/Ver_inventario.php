@@ -53,19 +53,13 @@ $contador = [
 
   <style>
     /* Fondo oscuro de fondo del modal */
-    .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background-color: rgba(224, 228, 238, 0.92); /* Azul oscuro con transparencia */
+/* Nuevo: Solo fondo visual, sin romper bootstrap */
+.modal-custom-bg {
+  background-color: rgba(224, 228, 238, 0.92);
   backdrop-filter: blur(3px);
-  animation: fadeIn 0.3s ease;
+  border-radius: 12px;
 }
+
 .scroll-text {
         max-height: 100px;
         max-width: 300px;
@@ -304,6 +298,7 @@ $contador = [
       <th>Descripcion</th>
       <th>Ubicacion de almacen</th>
       <th>Estado</th>
+      <th>Proveedor</th>
       <th>Última actualización</th>
       <th>Acciones</th>
     </tr>
@@ -374,6 +369,7 @@ $contador = [
         <td><div class="scroll-text"><?= nl2br(htmlspecialchars($row['descripcion'])) ?></div></td>
         <td><?= htmlspecialchars($row['ubicacion_almacen']) ?></td>
         <td><?= ucfirst($row['estado']) ?></td>
+        <td><?= htmlspecialchars($row['proveedor']) ?></td>
         <td><?= $row['ultima_actualizacion'] ?></td>
         <td>
       
@@ -386,6 +382,70 @@ function recalcularTotal(elemento) {
   fila.children[5].innerText = total;
 }
 </script>
+
+
+<a href="#modalDetalle<?= $row['id_Ingrediente'] ?>" class="btn-action btn-info" data-bs-toggle="modal">
+  <i class="fas fa-eye"></i> Ver detalle
+</a>
+
+<!-- Modal Detalle Ingrediente -->
+<!-- MODAL DE DETALLE MEJORADO -->
+<div class="modal fade" id="modalDetalle<?= $row['id_Ingrediente'] ?>" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title w-100 text-center"><?= htmlspecialchars($row['nombre']) ?></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+
+        <!-- Imagen centrada -->
+        <?php if (!empty($row['foto']) && file_exists("../uploads/" . $row['foto'])): ?>
+  <img 
+  src="../uploads/<?= htmlspecialchars($row['foto']) ?>" 
+  alt="Imagen del ingrediente" 
+  class="img-fluid rounded border mb-4"
+  style="max-height: 280px;">
+<?php else: ?>
+  <div class="text-muted text-center">
+    <p><strong>Imagen no disponible</strong></p>
+    <i class="fas fa-image fa-3x text-secondary"></i>
+  </div>
+<?php endif; ?>
+
+        <!-- Descripción -->
+        <div class="mb-4 text-start">
+          <h6><strong>Descripción:</strong></h6>
+          <p class="border rounded p-2 bg-light" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto;">
+            <?= nl2br(htmlspecialchars($row['descripcion'])) ?>
+          </p>
+        </div>
+
+        <!-- Detalles -->
+        <div class="row text-start">
+          <div class="col-md-6 mb-2"><strong>Costo unitario:</strong> $<?= number_format($row['costo_unitario'], 2) ?></div>
+          <div class="col-md-6 mb-2"><strong>Valor total:</strong> $<?= number_format($row['cantidad'] * $row['costo_unitario'], 2) ?></div>
+          <div class="col-md-6 mb-2"><strong>Fecha de vencimiento:</strong> <?= $row['fecha_vencimiento'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Lote:</strong> <?= $row['lote'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Categoría:</strong> <?= $row['categoria'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Unidad de medida:</strong> <?= $row['unidad_medida'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Cantidad:</strong> <?= $row['cantidad'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Cantidad mínima:</strong> <?= $row['cantidad_minima'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Estado:</strong> <?= ucfirst($row['estado']) ?></div>
+          <div class="col-md-6 mb-2"><strong>Ubicación de almacén:</strong> <?= $row['ubicacion_almacen'] ?></div>
+          <div class="col-md-6 mb-2"><strong>Última actualización:</strong> <?= $row['ultima_actualizacion'] ?></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
      <!-- Botón que activa el modal DE EDICION -->
@@ -412,29 +472,43 @@ function recalcularTotal(elemento) {
           <a href="../back_principal/Eliminar_Ingredientes.php?id=<?= $row['id_Ingrediente'] ?>" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este ingrediente? Esta acción no se puede deshacer.')" title="Eliminar">
             <i class="fas fa-trash"></i> Eliminar
           </a>  
-           <!-- MODAL DE DETALLE -->
-           <div class="modal fade" id="modal<?= $row['id_Ingrediente'] ?>" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title">Detalle del Ingrediente</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        <h6><strong>Descripción:</strong></h6>
-        <p><?= nl2br(htmlspecialchars($row['descripcion'])) ?></p>
 
-        <?php if (!empty($row['foto'])): ?>
-          <h6 class="mt-4"><strong>Imagen Adjunta:</strong></h6>
-          <img 
-            src="../back_principal/mostrar_imagen.php?id=<?= $row['id_Ingrediente'] ?>" 
-            alt="Imagen del ingrediente" 
-            class="img-fluid rounded border"
-            style="max-height: 300px;">
-        <?php else: ?>
-          <p class="text-muted">No se adjuntó imagen.</p>
-        <?php endif; ?>
+          <!-- MODAL DE DETALLE -->
+<div class="modal fade" id="modal<?= $row['id_Ingrediente'] ?>" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-custom-bg">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+
+        <!-- Nombre del insumo centrado -->
+        <h4 class="mb-4"><?= htmlspecialchars($row['nombre']) ?></h4>
+
+       <!-- Imagen del insumo -->
+<?php if (!empty($row['foto']) && file_exists("../uploads/" . $row['foto'])): ?>
+  <img 
+    src="../uploads/<?= htmlspecialchars($row['foto']) ?>" 
+    alt="Imagen del ingrediente"
+    class="img-fluid rounded border mb-4 d-block mx-auto"
+    style="max-height: 280px;">
+<?php else: ?>
+  <p class="text-muted text-center">No se adjuntó imagen o la imagen no se encontró.</p>
+<?php endif; ?>
+        <!-- Descripción -->
+        <div class="text-start mb-4">
+          <h6><strong>Descripción:</strong></h6>
+          <p><?= nl2br(htmlspecialchars($row['descripcion'])) ?></p>
+        </div>
+
+        <!-- Otros detalles -->
+        <div class="text-start">
+          <p><strong>Costo Unitario:</strong> $<?= htmlspecialchars($row['costo_unitario']) ?></p>
+          <p><strong>Valor Total:</strong> $<?= number_format($row['cantidad'] * $row['costo_unitario'], 2) ?></p>
+          <p><strong>Fecha de Vencimiento:</strong> <?= $row['fecha_vencimiento'] ?: '—' ?></p>
+          <p><strong>Categoría:</strong> <?= htmlspecialchars($row['categoria']) ?></p>
+          <p><strong>Proveedor:</strong> <?= htmlspecialchars($row['proveedor']) ?></p>
+          <p><strong>Estado:</strong> <?= ucfirst($row['estado']) ?></p>
+        </div>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
@@ -818,6 +892,9 @@ function togglePersonalizado(selectId, inputId) {
 <!--==================================================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 </body>
 </html>
 

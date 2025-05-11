@@ -8,6 +8,9 @@ if (!isset($_SESSION['id_usuario'])) {
 
 include '../auth/conexion.php';
 
+$carpeta_destino = "../uploads/";
+$nombre_archivo = "";
+
 $id_usuario = $_SESSION['id_usuario'];
 
 $nombre = $_POST['nombre'] ?? '';
@@ -49,11 +52,20 @@ $ubicacion_almacen = $_POST['ubicacion_almacen'] ?? NULL;
 $estado = $_POST['estado'] ?? 'activo';
 $proveedor = $_POST['proveedor'] ?? NULL;
 
-$foto = NULL;
+$nombre_archivo = NULL;
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
   $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-  $foto = uniqid() . "." . $ext;
-  move_uploaded_file($_FILES['foto']['tmp_name'], "../uploads/" . $foto);
+  $nombre_archivo = "ingrediente_" . uniqid() . "." . $ext;
+
+  if (!is_dir($carpeta_destino)) {
+    mkdir($carpeta_destino, 0777, true);
+  }
+
+  $tmp_name = $_FILES['foto']['tmp_name'];
+  if (!move_uploaded_file($tmp_name, $carpeta_destino . $nombre_archivo)) {
+    echo "<script>alert('Error al guardar la imagen'); window.history.back();</script>";
+    exit();
+  }
 }
 
 if (empty($nombre) || empty($unidad_medida) || empty($categoria)) {
@@ -113,7 +125,7 @@ if ($verificar->num_rows > 0) {
     $nombre, $cantidad, $cantidad_minima, $unidad_medida,
     $costo_unitario, $categoria, $fecha_vencimiento, $lote,
     $descripcion, $ubicacion_almacen, $estado, $proveedor,
-    $foto, $id_usuario
+    $nombre_archivo, $id_usuario
   );
   if (!$stmt->execute()) {
 
