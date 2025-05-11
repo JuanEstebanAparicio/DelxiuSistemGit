@@ -216,6 +216,7 @@ $contador = [
     <div class="config-menu" id="configMenu">
       <a href=""></a>
       <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
+      <a href="../front_principal/ver_historial.php">⏳historial de inventario</a>
       <a href="../php/logout.php">🚪 Cerrar Sesión</a>
     </div>
   </div>
@@ -607,11 +608,10 @@ $(document).ready(function () {
               bold: true
             };
 
-            const widths = [
-              40, 25, 30, 35, 35, 35, 30, 40, 35, 80, 50, 30, 40
-            ];
-            doc.content[1].table.widths = widths;
-             
+            const body = doc.content[1].table.body;
+const colCount = body[0].length;
+doc.content[1].table.widths = Array(colCount).fill('*');
+
 
             doc.content[1].alignment = 'center';
 
@@ -654,7 +654,8 @@ $(document).ready(function () {
         }
       ],
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+  url: '../assets/datatables/i18n/es-ES.json'
+
       },
       lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
       pageLength: 25
