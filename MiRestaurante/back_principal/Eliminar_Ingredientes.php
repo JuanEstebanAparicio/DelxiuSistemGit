@@ -4,12 +4,14 @@ if (!isset($_SESSION['id_usuario'])) {
   header("Location: ../Ver/Login.php");
   exit();
 }
+
 include '../auth/conexion.php';
+
 $id_usuario = $_SESSION['id_usuario'];
 $id = intval($_GET['id'] ?? 0);
 
-// Obtener datos del ingrediente antes de eliminar
-$consulta = $conexion->prepare("SELECT nombre, cantidad, lote, fecha_vencimiento FROM inventario WHERE id_Ingrediente = ? AND usuario_id = ?");
+// ✅ Incluir foto también aquí
+$consulta = $conexion->prepare("SELECT nombre, cantidad, lote, fecha_vencimiento, foto FROM inventario WHERE id_Ingrediente = ? AND usuario_id = ?");
 $consulta->bind_param("ii", $id, $id_usuario);
 $consulta->execute();
 $consulta->store_result();
@@ -19,11 +21,11 @@ if ($consulta->num_rows === 0) {
   exit();
 }
 
-$consulta->bind_result($nombre, $cantidad, $lote, $fecha_vencimiento);
+$consulta->bind_result($nombre, $cantidad, $lote, $fecha_vencimiento, $foto);
 $consulta->fetch();
 $consulta->close();
 
-// 📌 NUEVO: Borrar imagen si existe físicamente
+// ✅ Eliminar imagen si existe
 if (!empty($foto)) {
   $ruta_foto = "../uploads/" . $foto;
   if (file_exists($ruta_foto)) {
@@ -31,13 +33,13 @@ if (!empty($foto)) {
   }
 }
 
-// Eliminar ingrediente
+// 🗑 Eliminar ingrediente
 $eliminar = $conexion->prepare("DELETE FROM inventario WHERE id_Ingrediente = ? AND usuario_id = ?");
 $eliminar->bind_param("ii", $id, $id_usuario);
 $eliminar->execute();
 $eliminar->close();
 
-// Registrar en historial
+// 📝 Registrar en historial
 $accion = 'Eliminación';
 $historial = $conexion->prepare("INSERT INTO historial_inventario (nombre, cantidad, lote, fecha_vencimiento, accion, usuario_id)
 VALUES (?, ?, ?, ?, ?, ?)");
