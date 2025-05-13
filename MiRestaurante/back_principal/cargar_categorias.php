@@ -1,20 +1,18 @@
 <?php
-// cargar_categorias.php
-include '../auth/conexion.php';
-
+session_start();
 header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+include '../auth/conexion.php';
 
-if (!isset($conexion) || !$conexion) {
-    http_response_code(500);
-    echo json_encode(["error" => "Error de conexión a la base de datos"]);
+if (!isset($_SESSION['id_usuario'])) {
+    echo json_encode(["error" => "No hay sesión activa"]);
     exit;
 }
 
-$usuario_id = 1;
-$stmt = mysqli_prepare($conexion, "SELECT id_categoria, nombre_categoria FROM categorias_platillos WHERE usuario_id = ? ORDER BY nombre_categoria ASC");
+$usuario_id = $_SESSION['id_usuario'];
 
+$stmt = mysqli_prepare($conexion, "SELECT id_categoria, nombre_categoria FROM categorias_platillos WHERE usuario_id = ? ORDER BY nombre_categoria ASC");
 if (!$stmt) {
     echo json_encode(["error" => "Error en la consulta: " . mysqli_error($conexion)]);
     exit;
@@ -34,5 +32,3 @@ echo json_encode($categorias);
 mysqli_stmt_close($stmt);
 mysqli_close($conexion);
 ?>
-
-
