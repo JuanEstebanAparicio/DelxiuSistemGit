@@ -59,7 +59,7 @@ $resultado = $conexion->query("SELECT id, nombre, cantidad, lote, fecha_vencimie
     <header class="top-bar">
   <a href=""></a>
   <a href="../Ver/Inicio.php" class="btn amarillo">Inicio</a>
-  <a href="#" class="btn azul">Próximamente</a>
+    <a href="../front_principal/gestor_menu.php" class="btn azul">Gestion de menu</a>
   <a href="../front_principal/registro_ingrediente.php" class="btn verde">Inventario</a>
   <a href="../front_principal/Ver_inventario.php" class="btn red">Ver inventario</a>
   <div class="config-container">
