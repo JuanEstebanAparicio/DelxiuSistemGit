@@ -1,0 +1,82 @@
+Array
+(
+    [POST] => Array
+        (
+            [nombre] => Carne de cordero
+            [precio] => 1231
+            [id_categoria] => undefined
+            [tiempo_preparacion] => 12
+            [descripcion] => dsfssfsfdssdfsdfsdf
+            [ingredientes] => [{"id":"31","cantidad":2},{"id":"33","cantidad":2}]
+        )
+
+    [FILES] => Array
+        (
+            [foto] => Array
+                (
+                    [name] => gato.jpg
+                    [full_path] => gato.jpg
+                    [type] => image/jpeg
+                    [tmp_name] => C:\xampp\tmp\phpD46.tmp
+                    [error] => 0
+                    [size] => 9453
+                )
+
+        )
+
+    [ingredientes_raw] => [{"id":"31","cantidad":2},{"id":"33","cantidad":2}]
+    [ingredientes_json] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 31
+                    [cantidad] => 2
+                )
+
+            [1] => Array
+                (
+                    [id] => 33
+                    [cantidad] => 2
+                )
+
+        )
+
+)
+Array
+(
+    [POST] => Array
+        (
+            [nombre] => Queso
+            [precio] => 1212
+            [id_categoria] => undefined
+            [tiempo_preparacion] => 2
+            [descripcion] => asddsdasdsaddadsada
+            [ingredientes] => [{"id":"31","cantidad":1}]
+        )
+
+    [FILES] => Array
+        (
+            [foto] => Array
+                (
+                    [name] => 
+                    [full_path] => 
+                    [type] => 
+                    [tmp_name] => 
+                    [error] => 4
+                    [size] => 0
+                )
+
+        )
+
+    [ingredientes_raw] => [{"id":"31","cantidad":1}]
+    [ingredientes_json] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 31
+                    [cantidad] => 1
+                )
+
+        )
+
+)

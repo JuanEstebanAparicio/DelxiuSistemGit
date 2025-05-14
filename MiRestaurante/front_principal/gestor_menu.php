@@ -36,6 +36,15 @@
     <div class="flex-1 p-4">
       <button onclick="toggleSidebar()" class="mb-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Toggle Categorías</button>
       <div id="mainContent"></div>
+<div id="contenedorBotonPlatillo" class="p-4">
+  <div class="aspect-square w-40">
+    <button onclick="abrirModalPlatillo()" class="w-full h-full border-2 border-dashed border-gray-400 flex items-center justify-center text-4xl text-gray-500 hover:bg-gray-100 rounded">
+      +
+    </button>
+  </div>
+</div>
+
+  
     </div>
   </div>
 
@@ -154,5 +163,201 @@
 
     cargarCategorias();
   </script>
+
+<!-- Modal para crear platillo (diseño contextual, como en el mockup) -->
+<div id="modalPlatillo" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+<div class="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+
+    <h2 class="text-xl font-bold mb-4">Crear Nuevo Platillo</h2>
+    <form id="formPlatillo" enctype="multipart/form-data">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block mb-1 font-medium">Nombre:</label>
+          <input type="text" name="nombre" class="w-full p-2 border border-gray-300 rounded" required>
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Precio ($):</label>
+          <input type="number" step="0.01" name="precio" class="w-full p-2 border border-gray-300 rounded" required>
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Categoría:</label>
+          <select name="id_categoria" id="selectCategoria" class="w-full p-2 border border-gray-300 rounded" required></select>
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Tiempo preparación (min):</label>
+          <input type="number" name="tiempo_preparacion" class="w-full p-2 border border-gray-300 rounded" required>
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-1 font-medium">Descripción:</label>
+          <textarea name="descripcion" rows="3" class="w-full p-2 border border-gray-300 rounded"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-1 font-medium">Foto:</label>
+          <input type="file" name="foto" accept="image/*" class="w-full" id="inputFoto">
+
+          <div class="col-span-2 mt-2">
+  <img id="previewImagen" src="#" alt="Vista previa" class="w-32 h-32 object-cover rounded border border-gray-300 shadow hidden" />
+</div>
+        </div>
+      </div>
+
+      
+
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-2">Ingredientes Disponibles</h3>
+        <div id="listaIngredientes" class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto border p-2 rounded border-gray-300">
+          <!-- JS insertará ingredientes aquí -->
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-6 space-x-2">
+        <button type="button" onclick="cerrarModalPlatillo()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancelar</button>
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded">Crear Platillo</button>
+      </div>
+
+      
+
+    </form>
+  </div>
+</div>
+
+<script>
+function abrirModalPlatillo() {
+  fetch('../back_principal/cargar_ingredientes_categorias.php')
+    .then(res => res.json())
+    .then(data => {
+      const categorias = data.categorias || [];
+      const ingredientes = data.ingredientes || [];
+
+      if (categorias.length === 0) {
+        alert("❌ No puedes crear un platillo sin tener al menos una categoría.");
+        return;
+      }
+
+      if (ingredientes.length === 0) {
+        alert("❌ No puedes crear un platillo sin ingredientes disponibles en inventario.");
+        return;
+      }
+
+      // Mostrar el modal solo si todo está OK
+      document.getElementById("modalPlatillo").classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+
+      // Cargar select y lista como siempre
+      const catSelect = document.getElementById("selectCategoria");
+      catSelect.innerHTML = "";
+      categorias.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.id_categoria;
+        option.textContent = cat.nombre_categoria;
+        catSelect.appendChild(option);
+      });
+
+      const lista = document.getElementById("listaIngredientes");
+      lista.innerHTML = "";
+      ingredientes.forEach(ing => {
+        const div = document.createElement("div");
+        div.className = "flex items-center space-x-2";
+        div.innerHTML = `
+          <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng">
+          <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
+          <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
+        `;
+        lista.appendChild(div);
+      });
+
+      // Configura vista previa de imagen
+      const inputFoto = document.getElementById("inputFoto");
+      const preview = document.getElementById("previewImagen");
+      inputFoto.addEventListener("change", function () {
+        const archivo = this.files[0];
+        if (archivo) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden");
+          };
+          reader.readAsDataURL(archivo);
+        } else {
+          preview.src = "#";
+          preview.classList.add("hidden");
+        }
+      });
+    });
+}
+
+function cerrarModalPlatillo() {
+  document.getElementById("modalPlatillo").classList.add("hidden");
+  document.body.classList.remove("overflow-hidden"); // ✅ restaura scroll
+}
+
+
+
+
+function cargarIngredientesYcategorias() {
+  fetch('../back_principal/cargar_ingredientes_categorias.php')
+    .then(res => res.json())
+    .then(data => {
+      const catSelect = document.getElementById("selectCategoria");
+      catSelect.innerHTML = "";
+      data.categorias.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.id_categoria;
+        option.textContent = cat.nombre_categoria;
+        catSelect.appendChild(option);
+      });
+
+      const lista = document.getElementById("listaIngredientes");
+      lista.innerHTML = "";
+      data.ingredientes.forEach(ing => {
+        const div = document.createElement("div");
+        div.className = "flex items-center space-x-2";
+        div.innerHTML = `
+          <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng">
+          <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
+          <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
+        `;
+        lista.appendChild(div);
+      });
+    });
+}
+
+document.getElementById("formPlatillo").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+
+  const ingredientes = [];
+  document.querySelectorAll(".checkboxIng:checked").forEach(chk => {
+    const id = chk.value;
+    const cantidadInput = document.querySelector(`.inputCantidad[data-id='${id}']`);
+    const cantidad = parseFloat(cantidadInput.value || 0);
+    if (cantidad > 0) ingredientes.push({ id, cantidad });
+  });
+
+  formData.append("ingredientes", JSON.stringify(ingredientes));
+
+  fetch("../back_principal/guardar_platillo.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(response => {
+    if (response.success) {
+      alert("✅ Platillo creado exitosamente");
+      cerrarModalPlatillo();
+      form.reset();
+    } else {
+      alert("❌ Error al guardar: " + (response.error || "Error desconocido"));
+    }
+  })
+  .catch(error => {
+    console.error("Error al guardar platillo:", error);
+    alert("❌ Error en la conexión con el servidor.");
+  });
+});
+</script>
+
+
 </body>
 </html>
