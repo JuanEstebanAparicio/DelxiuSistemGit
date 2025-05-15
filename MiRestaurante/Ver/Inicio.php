@@ -52,7 +52,7 @@ $_SESSION['id'] = $id_usuario;
     <a href="#" class="btn amarillo">Inicio</a>
     <a href="../front_principal/gestor_menu.php" class="btn azul">Gestion de menu</a>
     <a href="../front_principal/registro_ingrediente.php" class="btn verde">Inventario</a>
-        <a href="../front_principal/Ver_inventario.php" class="btn red">Ver inventario</a>
+    <a href="../front_principal/Ver_inventario.php" class="btn red">Ver inventario</a>
     <div class="config-container">
       <button class="engranaje" onclick="toggleMenu()">⚙️</button>
       <div class="config-menu" id="configMenu">
