@@ -24,6 +24,7 @@
         <a href=""></a>
         <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
         <a href="../front_principal/ver_historial.php">⏳historial de inventario</a>
+        <a href="../front_principal/perfil_usuario.php">👤 Perfil</a>
         <a href="../php/logout.php">🚪 Cerrar Sesión</a>
       </div>
     </div>
@@ -67,7 +68,7 @@ function renderPlatillos(platillos) {
 
 
     <div class="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-  <button onclick="editarPlatillo(${platillo.id_platillo})" class="text-orange-500">🖊️</button>
+  <button onclick="editarPlatillo(${platillo.id})" class="text-orange-500">🖊️</button>
   <button onclick="eliminarPlatillo(${platillo.id}, '${platillo.nombre}')" class="text-red-500">🗑️</button>
 
 </div>
@@ -435,9 +436,16 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
       </div>
+        
+<div class="mt-4">
+  <label class="block mb-1 font-medium">🔍 Buscar ingrediente:</label>
+  <input type="text" id="buscadorIngrediente" placeholder="Escribe el nombre..." class="w-full p-2 border border-gray-300 rounded">
+</div>
 
+      
       <div class="mt-6">
         <h3 class="text-lg font-semibold mb-2">Ingredientes Disponibles</h3>
+        
         <div id="listaIngredientes" class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto border p-2 rounded border-gray-300"></div>
       </div>
 
@@ -450,14 +458,44 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
 
 <script>
+
+function aplicarFiltroIngredientes() {
+  const filtro = document.getElementById("buscadorIngrediente").value.toLowerCase();
+  const items = document.querySelectorAll("#listaIngredientes > div");
+  items.forEach(item => {
+    const nombre = item.textContent.toLowerCase();
+    item.style.display = nombre.includes(filtro) ? "flex" : "none";
+  });
+}
+
 function abrirModalPlatillo() {
-  document.getElementById("modalPlatillo").classList.remove("hidden");
+  fetch('../back_principal/cargar_ingredientes_categorias.php')
+    .then(res => res.json())
+    .then(data => {
+      const ingredientes = data.ingredientes || [];
+      const categorias = data.categorias || [];
 
-  const titulo = document.getElementById("tituloModalPlatillo");
-  const id = document.getElementById("editIdPlatillo").value;
-  titulo.textContent = id ? "Editar Platillo" : "Crear Nuevo Platillo";
+      if (ingredientes.length === 0 || categorias.length === 0) {
+        let msg = "❌ No se puede crear platillo:\n";
+        if (categorias.length === 0) msg += "- No hay categorías registradas.\n";
+        if (ingredientes.length === 0) msg += "- No hay ingredientes registrados.\n";
+        alert(msg);
+        return;
+      }
 
-  cargarIngredientesYcategorias();
+      // Si hay ingredientes y categorías, abrir el modal normalmente
+      document.getElementById("modalPlatillo").classList.remove("hidden");
+
+      const titulo = document.getElementById("tituloModalPlatillo");
+      const id = document.getElementById("editIdPlatillo").value;
+      titulo.textContent = id ? "Editar Platillo" : "Crear Nuevo Platillo";
+
+      cargarIngredientesYcategorias(data); // pasar datos para evitar doble llamada
+    })
+    .catch(err => {
+      console.error("❌ Error al cargar datos:", err);
+      alert("❌ No se pudo validar los datos para crear un platillo.");
+    });
 }
 
 function cerrarModalPlatillo() {
@@ -468,43 +506,36 @@ function cerrarModalPlatillo() {
   document.getElementById("previewImagen").classList.add("hidden");
 }
 
-function cargarIngredientesYcategorias() {
-  fetch('../back_principal/cargar_ingredientes_categorias.php')
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`Error HTTP: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then(data => {
-      const catSelect = document.getElementById("selectCategoria");
-      const currentCat = document.getElementById("editIdPlatillo").value ? null : categoriaSeleccionadaId;
-      catSelect.innerHTML = "";
-      data.categorias.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat.id_categoria;
-        option.textContent = cat.nombre_categoria;
-        if (cat.id_categoria == currentCat) option.selected = true;
-        catSelect.appendChild(option);
-      });
+function cargarIngredientesYcategorias(data = null) {
+  const load = data
+    ? Promise.resolve(data)
+    : fetch('../back_principal/cargar_ingredientes_categorias.php').then(res => res.json());
 
-      const lista = document.getElementById("listaIngredientes");
-      lista.innerHTML = "";
-      data.ingredientes.forEach(ing => {
-        const div = document.createElement("div");
-        div.className = "flex items-center space-x-2";
-        div.innerHTML = `
-          <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng">
-          <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
-          <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
-        `;
-        lista.appendChild(div);
-      });
-    })
-    .catch(error => {
-      console.error('Error al cargar ingredientes o categorías:', error);
-      alert('❌ No se pudo cargar ingredientes o categorías. Verifica la conexión o el archivo PHP.');
+  load.then(data => {
+    const catSelect = document.getElementById("selectCategoria");
+    const currentCat = document.getElementById("editIdPlatillo").value ? null : categoriaSeleccionadaId;
+    catSelect.innerHTML = "";
+    data.categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.id_categoria;
+      option.textContent = cat.nombre_categoria;
+      if (cat.id_categoria == currentCat) option.selected = true;
+      catSelect.appendChild(option);
     });
+
+    const lista = document.getElementById("listaIngredientes");
+    lista.innerHTML = "";
+    data.ingredientes.forEach(ing => {
+      const div = document.createElement("div");
+      div.className = "flex items-center space-x-2";
+      div.innerHTML = `
+        <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng">
+        <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
+        <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
+      `;
+      lista.appendChild(div);
+    });
+  });
 }
 
 
@@ -576,6 +607,11 @@ document.addEventListener("DOMContentLoaded", () => {
       preview.classList.add("hidden");
     }
   });
+
+  const buscador = document.getElementById("buscadorIngrediente");
+  if (buscador) {
+    buscador.addEventListener("input", aplicarFiltroIngredientes);
+  }
 });
 </script>
 

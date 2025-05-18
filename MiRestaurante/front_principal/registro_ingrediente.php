@@ -73,6 +73,7 @@
       <div class="config-menu" id="configMenu">
        <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
        <a href="../front_principal/ver_historial.php">⏳historial de inventario</a>
+       <a href="../front_principal/perfil_usuario.php">👤 Perfil</a>
         <a href="../php/logout.php">🚪 Cerrar Sesión</a>
       </div>
     </div>

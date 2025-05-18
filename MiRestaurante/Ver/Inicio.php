@@ -57,6 +57,7 @@ $_SESSION['id'] = $id_usuario;
       <button class="engranaje" onclick="toggleMenu()">⚙️</button>
       <div class="config-menu" id="configMenu">
        <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
+       <a href="../front_principal/perfil_usuario.php">👤 Perfil</a>
         <a href="../php/logout.php">🚪 Cerrar Sesión</a>
       </div>
     </div>
