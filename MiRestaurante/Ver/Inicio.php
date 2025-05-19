@@ -18,11 +18,11 @@ if ($conexion->connect_error) {
 }
 
 // Consulta para obtener el nombre usando el correo
-$sql = "SELECT id ,nombre_usuario FROM usuarios WHERE correo = ?";
+$sql = "SELECT id ,nombre_usuario, token_menu FROM usuarios WHERE correo = ?";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("s", $correo);
 $stmt->execute();
-$stmt->bind_result($id_usuario, $nombre);
+$stmt->bind_result($id_usuario, $nombre, $token_menu);
 $stmt->fetch();
 $stmt->close();
 $conexion->close();
@@ -68,10 +68,36 @@ $_SESSION['id'] = $id_usuario;
     <br><br>
     <div class="frase-bienvenida" id="fraseBienvenida">
   <h2>🌟 ¡Imagina y trae a la vida tus mejores ideas! 🌟</h2>
+  <?php
+// Asegúrate de que $token_menu está disponible y correcto
+$url = "http://localhost/Proyecto%20de%20aula/MiRestaurante/front_principal/ver_menu.php?token=" . $token_menu;
+
+
+?>
+<div style="max-width: 600px; margin: 40px auto; padding: 20px; background-color: #fef9c3; border: 2px solid #facc15; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <h2 style="color: #ca8a04; font-weight: bold; margin-bottom: 12px;">🔗 Enlace público de tu restaurante:</h2>
+  <input type="text" id="urlRestaurante" value="<?= htmlspecialchars($url) ?>" readonly style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; font-size: 16px;">
+  <button onclick="copiarEnlace()" style="margin-top: 10px; background-color: #4ade80; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer;">📋 Copiar enlace</button>
+  <p id="mensajeCopia" style="color: green; margin-top: 8px; display: none;">¡Copiado al portapapeles!</p>
+</div>
+
+<script>
+function copiarEnlace() {
+  const input = document.getElementById("urlRestaurante");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.getElementById("mensajeCopia").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("mensajeCopia").style.display = "none";
+  }, 3000);
+}
+</script>
+
 </div>
 
   </main>
-  <!-- ... otros elementos HTML ... -->
+
 
   <!-- GSAP y tu animación personalizada -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

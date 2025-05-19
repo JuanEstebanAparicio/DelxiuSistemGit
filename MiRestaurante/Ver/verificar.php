@@ -21,16 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $usuario_temp = $resultado->fetch_assoc();
 
         if ($usuario_temp['codigo_verificacion'] == $codigo_ingresado) {
+            // ✅ Generar token único
+            $token_menu = bin2hex(random_bytes(16));
+
             // Insertar usuario en tabla final "usuarios"
-            $sql_insert = "INSERT INTO usuarios (nombre_usuario, correo, clave, nombre_restaurante)
-                           VALUES (?, ?, ?, ?)";
+            $sql_insert = "INSERT INTO usuarios (nombre_usuario, correo, clave, nombre_restaurante, token_menu)
+                           VALUES (?, ?, ?, ?, ?)";
             $stmt_insert = $conn->prepare($sql_insert);
             $stmt_insert->bind_param(
-                "ssss",
+                "sssss",
                 $usuario_temp['usuario'],
                 $usuario_temp['correo'],
                 $usuario_temp['contrasena'],
-                $usuario_temp['restaurante']
+                $usuario_temp['restaurante'],
+                $token_menu
             );
             $stmt_insert->execute();
 
@@ -57,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .alerta {
             background-color: #fff;
-            border: 1px solidrgb(55, 216, 136);
-            border-left: 5px solidrgb(45, 223, 119);
+            border: 1px solid rgb(55, 216, 136);
+            border-left: 5px solid rgb(45, 223, 119);
             padding: 20px 30px;
             border-radius: 8px;
             max-width: 400px;
@@ -66,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .alerta h2 {
-            color:rgb(45, 243, 121);
+            color: rgb(45, 243, 121);
             margin-bottom: 10px;
         }
         .alerta p {
@@ -74,22 +78,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .alerta a {
             text-decoration: none;
-            background-color:rgb(35, 245, 115);
+            background-color: rgb(35, 245, 115);
             color: #fff;
             padding: 10px 20px;
             border-radius: 5px;
             transition: background-color 0.3s;
         }
         .alerta a:hover {
-            background-color:rgb(54, 243, 95);
+            background-color: rgb(54, 243, 95);
         }
     </style>
 </head>
 <body>
     <div class="alerta">
         <h2>Registrado correctamente</h2>
-        <p>Puede iniciar sesion.</p>
-        <a href="../Ver/Login.php">Iniciar sesion</a>
+        <p>Puede iniciar sesión.</p>
+        <a href="../Ver/Login.php">Iniciar sesión</a>
     </div>
 </body>
 </html>';
@@ -100,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Codigo incorrecto</title>
+    <title>Código incorrecto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -142,16 +146,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="alerta">
-        <h2>Codigo Incorrecto</h2>
+        <h2>Código Incorrecto</h2>
         <p>Verifique bien y vuelva a ingresarlo.</p>
-        <p>En caso de que su correo este correcto simplemente vuelva a interntar en 30 minutos.</p>
+        <p>En caso de que su correo esté correcto simplemente vuelva a intentar en 30 minutos.</p>
         <a href="javascript:history.back()">Volver a ingresar</a>
     </div>
 </body>
 </html>';
         }
     } else {
-        echo "<div class='mensaje error'>❌ No se encontró ningun codigo asociado.</div>";
+        echo "<div class='mensaje error'>❌ No se encontró ningún código asociado.</div>";
     }
 
     $stmt->close();
