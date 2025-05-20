@@ -62,7 +62,7 @@
 <body>
     <div class="form-container">
         <h2>Registro de Restaurante</h2>
-        <form action="../auth/procesar_registro.php" method="POST">
+        <form action="../modelo/procesar_registro.php" method="POST">
             <label>Nombre de usuario:</label>
             <input type="text" name="usuario" required>
 

@@ -104,11 +104,11 @@
 </head>
 
 <body>
-  <?php include("../assets/darkmode-toggle.html"); ?>
+  <?php include("../Ver/assets/darkmode-toggle.html"); ?>
 
   <div class="login-container">
     <h1>Inicie Sesión</h1>
-    <form action="../auth/login.php" method="POST" autocomplete="on">
+    <form action="../modelo/login.php" method="POST" autocomplete="on">
       <label for="correo">Correo</label><br><br>
       <input type="email" name="correo" id="correo" placeholder="Correo" autocomplete="username" required><br><br>
 

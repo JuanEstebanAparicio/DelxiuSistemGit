@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../auth/conexion.php");
+include("../modelo/conexion.php");
 if (!isset($_SESSION['correo'])) {
 
     header("Location: ../Ver/Login.php");
@@ -50,15 +50,15 @@ $_SESSION['id'] = $id_usuario;
   <header class="top-bar">
     <a href=""></a>
     <a href="#" class="btn amarillo">Inicio</a>
-    <a href="../front_principal/gestor_menu.php" class="btn azul">Gestion de menu</a>
-    <a href="../front_principal/registro_ingrediente.php" class="btn verde">Inventario</a>
-    <a href="../front_principal/Ver_inventario.php" class="btn red">Ver inventario</a>
+    <a href="../Ver/gestor_menu.php" class="btn azul">Gestion de menu</a>
+    <a href="../Ver/registro_ingrediente.php" class="btn verde">Inventario</a>
+    <a href="../Ver/Ver_inventario.php" class="btn red">Ver inventario</a>
     <div class="config-container">
       <button class="engranaje" onclick="toggleMenu()">⚙️</button>
       <div class="config-menu" id="configMenu">
        <a href="../css/estilos.css" id="cambiarTema">🌓 Cambiar Tema</a>
-       <a href="../front_principal/perfil_usuario.php">👤 Perfil</a>
-        <a href="../php/logout.php">🚪 Cerrar Sesión</a>
+       <a href="../Ver/perfil_usuario.php">👤 Perfil</a>
+       <a href="../controlador/php/logout.php">🚪 Cerrar Sesión</a>
       </div>
     </div>
   </header>
@@ -70,7 +70,7 @@ $_SESSION['id'] = $id_usuario;
   <h2>🌟 ¡Imagina y trae a la vida tus mejores ideas! 🌟</h2>
   <?php
 // Asegúrate de que $token_menu está disponible y correcto
-$url = "http://localhost/Proyecto%20de%20aula/MiRestaurante/front_principal/ver_menu.php?token=" . $token_menu;
+$url = "http://localhost/Proyecto%20de%20aula/MiRestaurante/Ver/ver_menu.php?token=" . $token_menu;
 
 
 ?>
@@ -115,7 +115,7 @@ function copiarEnlace() {
 
 <script>
 function mostrarNotificaciones() {
-  fetch("../back_principal/notificaciones_ingredientes.php")
+  fetch("../modelo/notificaciones_ingredientes.php")
     .then(res => res.json())
     .then(data => {
       if (!data.avisos || data.avisos.length === 0) return;

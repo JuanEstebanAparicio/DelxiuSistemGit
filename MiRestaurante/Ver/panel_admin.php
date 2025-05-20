@@ -124,7 +124,7 @@ $resultado = $conexion->query($sql);
 </head>
 <body>
 <center>
-<a href="../php/logout.php">Volver</a>
+<a href="../controlador/php/logout.php">Volver</a>
 </center>
 <br>
     <div class="contenedor">
@@ -153,7 +153,7 @@ $resultado = $conexion->query($sql);
     
                     <td>
                         <?php if ($fila['rol'] != 'admin') { ?>
-                            <form method="POST" action="../auth/eliminar_usuarios.php" style="display:inline;">
+                            <form method="POST" action="../modelo/eliminar_usuarios.php" style="display:inline;">
                                 <input type="hidden" name="id" value="<?= $fila['id'] ?>">
                                 <button class="boton eliminar" type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</button>
                                 </form>
@@ -162,7 +162,7 @@ $resultado = $conexion->query($sql);
                     </td>
                     <td>
                         <?php if ($fila['rol'] != 'admin') { ?>
-                            <form action="../auth/cambiar_estado.php" method="POST" style="display:inline;">
+                            <form action="../modelo/cambiar_estado.php" method="POST" style="display:inline;">
                             <input type="hidden" name="id" value="<?php echo $fila['id']; ?>">
                             <input type="hidden" name="estado" value="<?php echo $fila['estado'] === 'activo' ? 'bloqueado' : 'activo'; ?>">
     
