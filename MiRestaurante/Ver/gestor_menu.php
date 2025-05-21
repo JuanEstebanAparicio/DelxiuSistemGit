@@ -51,7 +51,7 @@
 
 <script>
 function mostrarCombos() {
-  fetch("../modelo/cargar_combos.php")
+  fetch("../modelo/cargar_combos.php?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
       const contenedor = document.getElementById("contenedorPlatillos");
@@ -65,6 +65,11 @@ function mostrarCombos() {
           <h3 class="font-bold text-lg">${combo.nombre_combo}</h3>
           <p class="text-sm text-gray-600">${combo.descripcion || "Sin descripción"}</p>
           <p class="text-green-700 font-bold mt-2">$${combo.precio_combo.toFixed(2)}</p>
+          <span class="text-xs px-2 py-1 rounded-full ${
+            combo.estado === 'activo' 
+              ? 'bg-green-100 text-green-700' 
+              : 'bg-red-100 text-red-700'
+          }">${combo.estado}</span>
           <div class="mt-2 flex space-x-2">
             <button onclick="editarCombo(${combo.id})" class="text-yellow-500 hover:text-yellow-700">✏️</button>
             <button onclick="eliminarCombo(${combo.id})" class="text-red-500 hover:text-red-700">🗑️</button>
@@ -79,6 +84,7 @@ function mostrarCombos() {
       alert("❌ Error cargando combos.");
     });
 }
+
 
 function editarCombo(id) {
   fetch(`../modelo/obtener_combo.php?id=${id}`)
@@ -95,8 +101,8 @@ function editarCombo(id) {
       document.querySelector("[name='nombre_combo']").value = data.nombre_combo;
       document.querySelector("[name='descripcion']").value = data.descripcion;
       document.querySelector("[name='precio_combo']").value = data.precio_combo;
+      document.querySelector("[name='estado']").value = data.estado || "activo";
 
-      // Cargar platillos disponibles
       fetch("../modelo/cargar_platillos.php?modo=combo")
         .then(res => res.json())
         .then(platillos => {
@@ -131,23 +137,20 @@ function eliminarCombo(id) {
     method: "POST",
     body: formData
   })
-  .then(res => res.json())
-  .then(response => {
-    if (response.success) {
-      alert("✅ Combo eliminado");
-      mostrarCombos();
-    } else {
-      alert("❌ Error: " + (response.error || "No se pudo eliminar el combo."));
-    }
-  })
-  .catch(err => {
-    console.error("Error al eliminar combo:", err);
-    alert("❌ Error al conectar con el servidor.");
-  });
+    .then(res => res.json())
+    .then(response => {
+      if (response.success) {
+        alert("✅ Combo eliminado");
+        mostrarCombos();
+      } else {
+        alert("❌ Error: " + (response.error || "No se pudo eliminar el combo."));
+      }
+    })
+    .catch(err => {
+      console.error("Error al eliminar combo:", err);
+      alert("❌ Error al conectar con el servidor.");
+    });
 }
-
-
-
 
 
 let categoriaSeleccionada = null;
@@ -178,6 +181,12 @@ function renderPlatillos(platillos) {
     <div class="text-center mt-2">
       <h3 class="font-semibold text-sm">${platillo.nombre}</h3>
       <p class="text-gray-600 text-sm">$${platillo.precio.toFixed(2)}</p>
+      <span class="inline-block text-xs px-2 py-1 rounded-full mt-1
+  ${platillo.estado === 'disponible' ? 'bg-green-100 text-green-700' :
+    platillo.estado === 'agotado' ? 'bg-yellow-100 text-yellow-700' :
+    'bg-red-100 text-red-700'}">
+  ${platillo.estado}
+</span>
     </div>
   </div>
 `;
@@ -213,6 +222,8 @@ function editarPlatillo(id) {
         document.querySelector("#formPlatillo [name='precio']").value = data.precio;
         document.querySelector("#formPlatillo [name='descripcion']").value = data.descripcion;
         document.querySelector("#formPlatillo [name='tiempo_preparacion']").value = data.tiempo_preparacion;
+        document.querySelector("[name='estado']").value = data.estado || 'disponible';
+
 
         setTimeout(() => {
           document.querySelector("#formPlatillo [name='id_categoria']").value = data.id_categoria;
@@ -508,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- Modal para crear/editar platillo -->
 <div id="modalPlatillo" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 overflow-y-auto">
-  <div class="bg-white p-6 rounded-lg w-full max-w-2xl shadow-xl">
+ <div class="bg-white p-6 rounded-lg w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
     <h2 id="tituloModalPlatillo" class="text-xl font-bold mb-4">Crear Nuevo Platillo</h2>
 
     <form id="formPlatillo" enctype="multipart/form-data">
@@ -524,6 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <label class="block mb-1 font-medium">Precio ($):</label>
           <input type="number" step="0.01" name="precio" class="w-full p-2 border border-gray-300 rounded" required>
         </div>
+
         <div>
           <label class="block mb-1 font-medium">Categoría:</label>
           <select name="id_categoria" id="selectCategoria" class="w-full p-2 border border-gray-300 rounded" required></select>
@@ -536,6 +548,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <label class="block mb-1 font-medium">Descripción:</label>
           <textarea name="descripcion" rows="3" class="w-full p-2 border border-gray-300 rounded"></textarea>
         </div>
+
+        <div>
+  <label class="block mb-1 font-medium">Estado del Platillo:</label>
+  <select name="estado" class="w-full p-2 border border-gray-300 rounded">
+    <option value="disponible">Disponible</option>
+    <option value="no_disponible">No disponible</option>
+  </select>
+</div>
+
+
         <div class="col-span-2">
           <label class="block mb-1 font-medium">Foto:</label>
           <input type="file" name="foto" id="inputFoto" accept="image/*" class="w-full">
@@ -807,6 +829,13 @@ document.addEventListener("DOMContentLoaded", mostrarNotificaciones);
   <label class="block mb-1 font-medium">Descripción del Combo:</label>
   <textarea name="descripcion" rows="3" class="w-full p-2 border border-gray-300 rounded"></textarea>
 </div>
+<div>
+  <label class="block mb-1 font-medium">Estado:</label>
+  <select name="estado" class="w-full p-2 border border-gray-300 rounded">
+    <option value="activo">Activo</option>
+    <option value="inactivo">Inactivo</option>
+  </select>
+</div>
       <div class="mt-4">
         <label class="block font-medium mb-1">Seleccionar Platillos:</label>
         <div id="listaPlatillosCombo" class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto border p-2 rounded border-gray-300"></div>
@@ -845,7 +874,7 @@ document.getElementById("formCombo").addEventListener("submit", function(e) {
    if (resp.success) {
   alert("✅ Combo guardado exitosamente");
   cerrarModalCombo();
-  mostrarCombos(); // 🔁 Refresca la lista de combos actualizada
+  mostrarCombos(); // ← esto recarga la vista
 }else {
       alert("❌ Error: " + (resp.error || "No se pudo guardar el combo"));
     }
@@ -862,9 +891,14 @@ document.getElementById("formCombo").addEventListener("submit", function(e) {
 
 // FUNCIONES COMBO
 function abrirModalCombo() {
+  document.getElementById("formCombo").reset();
+  document.getElementById("editIdCombo").value = ""; // <- Limpia el campo oculto ID
+  document.getElementById("listaPlatillosCombo").innerHTML = "";
   document.getElementById("modalCombo").classList.remove("hidden");
+
   cargarPlatillosParaCombo();
 }
+
 
 function cerrarModalCombo() {
   document.getElementById("modalCombo").classList.add("hidden");

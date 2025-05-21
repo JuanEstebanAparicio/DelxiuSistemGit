@@ -11,7 +11,8 @@ if (!isset($_SESSION['id_usuario'])) {
 $id_usuario = $_SESSION['id_usuario'];
 $id_combo = intval($_GET['id'] ?? 0);
 
-$stmt = $conexion->prepare("SELECT id_combo, nombre_combo, descripcion, precio_combo FROM menu_combos WHERE id_combo = ? AND usuario_id = ?");
+// ✅ INCLUYE ESTADO
+$stmt = $conexion->prepare("SELECT id_combo, nombre_combo, descripcion, precio_combo, estado FROM menu_combos WHERE id_combo = ? AND usuario_id = ?");
 $stmt->bind_param("ii", $id_combo, $id_usuario);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -34,12 +35,13 @@ while ($r = $result->fetch_assoc()) {
   $platillos[] = intval($r['platillo_id']);
 }
 
-// Ajustar la clave del ID
+// ✅ INCLUIR ESTADO en la respuesta
 $response = [
   "id" => $combo["id_combo"],
   "nombre_combo" => $combo["nombre_combo"],
   "descripcion" => $combo["descripcion"],
   "precio_combo" => floatval($combo["precio_combo"]),
+  "estado" => $combo["estado"],
   "platillos" => $platillos
 ];
 

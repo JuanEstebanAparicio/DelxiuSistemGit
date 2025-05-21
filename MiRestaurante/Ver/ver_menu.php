@@ -104,8 +104,45 @@ $nombre_restaurante = $usuario['nombre_restaurante'];
             btn.onclick = () => seleccionarCategoria(cat.id_categoria);
             categoryList.appendChild(btn);
           });
+const btnCombo = document.createElement("button");
+btnCombo.textContent = "Combos 🧃";
+btnCombo.className = "w-full text-left px-4 py-2 bg-purple-700 hover:bg-purple-600 rounded-lg text-white font-medium mt-2";
+btnCombo.onclick = cargarCombosCliente;
+categoryList.appendChild(btnCombo);
         });
-    }
+      }
+
+function cargarCombosCliente() {
+  fetch(`../modelo/cargar_combos.php?id_usuario=${usuarioId}`)
+    .then(res => res.json())
+    .then(data => {
+      const contenedor = document.getElementById("contenedorPlatillos");
+      contenedor.innerHTML = "";
+
+      if (!data.length) {
+        contenedor.innerHTML = "<p class='text-gray-600'>No hay combos disponibles.</p>";
+        return;
+      }
+
+      data.forEach(combo => {
+        const div = document.createElement("div");
+        div.className = "bg-white p-4 border rounded shadow";
+
+        div.innerHTML = `
+          <h3 class="text-lg font-bold text-purple-800">${combo.nombre_combo}</h3>
+          <p class="text-gray-600">${combo.descripcion || "Sin descripción"}</p>
+          <p class="text-green-700 font-bold mt-2">$${parseFloat(combo.precio_combo).toFixed(2)}</p>
+        `;
+
+        contenedor.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error("Error cargando combos:", err);
+    });
+}
+
+
 
     function cargarPlatillos(idCategoria = null) {
       let url = `../modelo/cargar_platillos.php?id_usuario=${usuarioId}`;

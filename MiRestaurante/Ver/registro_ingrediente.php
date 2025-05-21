@@ -63,7 +63,7 @@
     <a href=""></a>
     <a href="../Ver/Inicio.php" class="btn amarillo">Inicio</a>
     <a href="../Ver/gestor_menu.php" class="btn azul">Gestion de menu</a>
-    <a href="../front_principal/registro_ingrediente.php" class="btn verde">Inventario</a>
+    <a href="#" class="btn verde">Inventario</a>
     <a href="../Ver/Ver_inventario.php" class="btn red">Ver inventario</a>
 
 

@@ -8,10 +8,14 @@ if (!isset($_SESSION['id_usuario'])) {
   exit;
 }
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 $usuario_id = $_SESSION['id_usuario'];
 $id_combo = isset($_POST['id_combo']) && is_numeric($_POST['id_combo']) ? intval($_POST['id_combo']) : null;
 $nombre = trim($_POST['nombre_combo'] ?? '');
 $descripcion = trim($_POST['descripcion'] ?? '');
+$estado = $_POST['estado'] ?? 'activo';
 $precio = floatval($_POST['precio_combo'] ?? 0);
 $platillos = $_POST['platillos'] ?? [];
 
@@ -21,31 +25,37 @@ if ($nombre === '' || $precio <= 0 || empty($platillos)) {
 }
 
 if ($id_combo) {
-  // 🔁 EDICIÓN DE COMBO
-  $stmt = $conexion->prepare("UPDATE menu_combos SET nombre_combo = ?, descripcion = ?, precio_combo = ? WHERE id_combo = ? AND usuario_id = ?");
-  $stmt->bind_param("ssdii", $nombre, $descripcion, $precio, $id_combo, $usuario_id);
+  // 🔁 Actualizar combo
+  $stmt = $conexion->prepare("UPDATE menu_combos 
+    SET nombre_combo = ?, descripcion = ?, precio_combo = ?, estado = ? 
+    WHERE id_combo = ? AND usuario_id = ?");
+  $stmt->bind_param("ssdsii", $nombre, $descripcion, $precio, $estado, $id_combo, $usuario_id);
+
   if (!$stmt->execute()) {
     echo json_encode(["error" => "Error al actualizar combo: " . $stmt->error]);
     exit;
   }
   $stmt->close();
 
-  // 🧹 Borrar platillos anteriores
   $conexion->query("DELETE FROM menu_combo_detalles WHERE combo_id = $id_combo");
 
 } else {
-  // 🆕 NUEVO COMBO
-  $stmt = $conexion->prepare("INSERT INTO menu_combos (usuario_id, nombre_combo, descripcion, precio_combo) VALUES (?, ?, ?, ?)");
-  $stmt->bind_param("issd", $usuario_id, $nombre, $descripcion, $precio);
+  // 🆕 Insertar nuevo combo
+  $stmt = $conexion->prepare("INSERT INTO menu_combos 
+    (usuario_id, nombre_combo, descripcion, precio_combo, estado) 
+    VALUES (?, ?, ?, ?, ?)");
+  $stmt->bind_param("issds", $usuario_id, $nombre, $descripcion, $precio, $estado);
+
   if (!$stmt->execute()) {
     echo json_encode(["error" => "Error al guardar combo: " . $stmt->error]);
     exit;
   }
+
   $id_combo = $stmt->insert_id;
   $stmt->close();
 }
 
-// 💾 Insertar nuevos platillos
+// 💾 Insertar platillos
 $stmtDetalle = $conexion->prepare("INSERT INTO menu_combo_detalles (combo_id, platillo_id) VALUES (?, ?)");
 foreach ($platillos as $pid) {
   $id_platillo = intval($pid);
