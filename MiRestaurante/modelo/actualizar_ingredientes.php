@@ -6,7 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 include '../modelo/conexion.php';
-
+require_once '../modelo/funciones_estado.php';
 $carpeta_destino = "../uploads/";
 $nombre_archivo = "";
 
@@ -66,6 +66,7 @@ if (!is_dir($carpeta_destino)) {
   }
 
   if ($stmt->execute()) {
+    actualizarEstadoPlatillosPorIngrediente($conexion, $id, $id_usuario);
     header("Location: ../Ver/ver_inventario.php?actualizado=1");
     exit();
   } else {

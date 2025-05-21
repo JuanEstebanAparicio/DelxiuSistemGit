@@ -21,18 +21,29 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Obtener ingredientes activos
+// Obtener TODOS los ingredientes (no solo activos)
 $ingredientes = [];
-$stmt = $conexion->prepare("SELECT id_Ingrediente, nombre, unidad_medida FROM inventario WHERE estado = 'activo' AND usuario_id = ? ORDER BY nombre ASC");
+$stmt = $conexion->prepare("
+  SELECT id_Ingrediente, nombre, unidad_medida, estado, fecha_vencimiento
+  FROM inventario
+  WHERE usuario_id = ?
+  ORDER BY nombre ASC
+");
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $result = $stmt->get_result();
+
 while ($row = $result->fetch_assoc()) {
-  $ingredientes[] = $row;
+  $ingredientes[] = [
+    "id_Ingrediente" => $row["id_Ingrediente"],
+    "nombre" => $row["nombre"],
+    "unidad_medida" => $row["unidad_medida"],
+    "estado" => $row["estado"],
+    "fecha_vencimiento" => $row["fecha_vencimiento"]
+  ];
 }
 $stmt->close();
 
-// Respuesta combinada
 echo json_encode([
   "categorias" => $categorias,
   "ingredientes" => $ingredientes

@@ -3,8 +3,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de platillos</title>
-    <link rel="stylesheet" href="../css/estilos.css">
-    <script src="../js/funcionalidad.js" defer></script>
+    <link rel="stylesheet" href="../Ver/css/estilos.css">
+    <script src="../controlador/js/funcionalidad.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <style>.bg-blue-600 {
@@ -222,7 +222,8 @@ function editarPlatillo(id) {
         document.querySelector("#formPlatillo [name='precio']").value = data.precio;
         document.querySelector("#formPlatillo [name='descripcion']").value = data.descripcion;
         document.querySelector("#formPlatillo [name='tiempo_preparacion']").value = data.tiempo_preparacion;
-        document.querySelector("[name='estado']").value = data.estado || 'disponible';
+       document.querySelector("[name='estado']").value = data.estado || 'disponible';
+
 
 
         setTimeout(() => {
@@ -230,21 +231,34 @@ function editarPlatillo(id) {
         }, 200);
 
         fetch('../modelo/cargar_ingredientes_categorias.php')
-          .then(res => res.json())
-          .then(ingData => {
-            const lista = document.getElementById("listaIngredientes");
-            lista.innerHTML = "";
-            ingData.ingredientes.forEach(ing => {
-              const checked = data.ingredientes.find(i => i.id == ing.id_Ingrediente);
-              lista.innerHTML += `
-                <div class="flex items-center space-x-2">
-                  <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng" ${checked ? "checked" : ""}>
-                  <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
-                  <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}" value="${checked ? checked.cantidad : ""}">
-                </div>
-              `;
-            });
-          });
+  .then(res => res.json())
+  .then(ingData => {
+    const lista = document.getElementById("listaIngredientes");
+    lista.innerHTML = "";
+    ingData.ingredientes.forEach(ing => {
+      const checked = data.ingredientes.find(i => i.id == ing.id_Ingrediente);
+      const isVencido = ing.estado === 'vencido';
+      const isInactivo = ['agotado', 'no disponible'].includes(ing.estado);
+      
+      const claseTexto = isVencido ? "text-red-600 line-through" :
+                         isInactivo ? "text-gray-500 italic" : "";
+
+      lista.innerHTML += `
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}"
+            class="checkboxIng" ${checked ? "checked" : ""}>
+          <label for="ing_${ing.id_Ingrediente}" class="flex-1 ${claseTexto}">
+            ${ing.nombre} (${ing.unidad_medida})
+            ${isVencido ? ' - VENCIDO' : isInactivo ? ` - ${ing.estado.toUpperCase()}` : ''}
+          </label>
+          <input type="number" step="0.01" min="0" placeholder="Cantidad"
+            class="inputCantidad border rounded px-2 py-1 w-24"
+            data-id="${ing.id_Ingrediente}" value="${checked ? checked.cantidad : ""}">
+        </div>
+      `;
+    });
+  });
+
 
         const preview = document.getElementById("previewImagen");
         if (data.foto) {
@@ -661,7 +675,7 @@ function cargarIngredientesYcategorias(data = null) {
       div.innerHTML = `
         <input type="checkbox" id="ing_${ing.id_Ingrediente}" value="${ing.id_Ingrediente}" class="checkboxIng">
         <label for="ing_${ing.id_Ingrediente}" class="flex-1">${ing.nombre} (${ing.unidad_medida})</label>
-        <input type="number" step="0.01" min="0" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
+        <input type="number" step="0.01" min="0" name="cant_${ing.id_Ingrediente}" placeholder="Cantidad" class="inputCantidad border rounded px-2 py-1 w-24" data-id="${ing.id_Ingrediente}">
       `;
       lista.appendChild(div);
     });
@@ -674,7 +688,9 @@ document.getElementById("formPlatillo").addEventListener("submit", function(e) {
   const form = e.target;
   const formData = new FormData(form);
 
+  // ✅ Asegura que sea un array
   const ingredientes = [];
+
   document.querySelectorAll(".checkboxIng:checked").forEach(chk => {
     const id = chk.value;
     const cantidadInput = document.querySelector(`.inputCantidad[data-id='${id}']`);
@@ -717,6 +733,7 @@ document.getElementById("formPlatillo").addEventListener("submit", function(e) {
     alert("❌ Error en la conexión con el servidor.");
   });
 });
+
 
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -4,8 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestor de inventarios</title>
    <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////7 --> 
-  <link rel="stylesheet" href="../css/estilos.css">
-  <script src="../js/funcionalidad.js" defer></script>
+<link rel="stylesheet" href="../Ver/css/estilos.css">
+    <script src="../controlador/js/funcionalidad.js" defer></script>
  <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////7 --> 
   <style>
     body { background-color: #f8f9fa; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }

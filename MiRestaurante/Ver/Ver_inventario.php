@@ -38,8 +38,8 @@ $contador = [
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../css/estilos.css">
-  <script src="../js/funcionalidad.js" defer></script>
+  <link rel="stylesheet" href="../Ver/css/estilos.css">
+    <script src="../controlador/js/funcionalidad.js" defer></script>
   <script src="../js/gestion_ingredientes.js" defer></script>
 
   <!-- Librerias datatable export -->
@@ -322,7 +322,7 @@ $contador = [
         $clase_fila = 'no-disponible';
       } else {
         // Cambiar automáticamente a 'vencido' si la fecha ya pasó
-        if (!empty($fecha_vencimiento) && $fecha_vencimiento < $fecha_actual && $row['estado'] !== 'vencido') {
+        if (!empty($fecha_vencimiento ) && $fecha_vencimiento <= $fecha_actual && $row['estado'] !== 'vencido') {
           $conexion->query("UPDATE inventario SET estado = 'vencido' WHERE id_Ingrediente = $id");
           $row['estado'] = 'vencido';
         }

@@ -10,24 +10,31 @@ if (!$usuario_id) {
 }
 
 $id_categoria = isset($_GET['id_categoria']) ? intval($_GET['id_categoria']) : null;
+$modoCliente = isset($_GET['cliente']); // si viene desde ver_menu
 
 $platillos = [];
 
 if ($id_categoria) {
-    $stmt = $conexion->prepare("
-        SELECT id_platillo, nombre, precio, foto 
-        FROM menu_platillo 
-        WHERE usuario_id = ? AND id_categoria = ? 
-        ORDER BY id_platillo DESC
-    ");
+    $sql = "SELECT id_platillo, nombre, precio, foto, estado 
+            FROM menu_platillo 
+            WHERE usuario_id = ? AND id_categoria = ?";
+    if ($modoCliente) {
+        $sql .= " AND estado = 'disponible'";
+    }
+    $sql .= " ORDER BY id_platillo DESC";
+
+    $stmt = $conexion->prepare($sql);
     $stmt->bind_param("ii", $usuario_id, $id_categoria);
 } else {
-    $stmt = $conexion->prepare("
-        SELECT id_platillo, nombre, precio, foto 
-        FROM menu_platillo 
-        WHERE usuario_id = ? 
-        ORDER BY id_platillo DESC
-    ");
+    $sql = "SELECT id_platillo, nombre, precio, foto, estado 
+            FROM menu_platillo 
+            WHERE usuario_id = ?";
+    if ($modoCliente) {
+        $sql .= " AND estado = 'disponible'";
+    }
+    $sql .= " ORDER BY id_platillo DESC";
+
+    $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $usuario_id);
 }
 
@@ -39,7 +46,8 @@ while ($row = $result->fetch_assoc()) {
         'id' => $row['id_platillo'],
         'nombre' => $row['nombre'],
         'precio' => floatval($row['precio']),
-        'foto' => $row['foto'] ?: '../uploads/platillos/default.png'
+        'foto' => $row['foto'] ?: '../uploads/platillos/default.png',
+        'estado' => $row['estado']
     ];
 }
 
@@ -47,3 +55,4 @@ $stmt->close();
 $conexion->close();
 
 echo json_encode($platillos);
+?>

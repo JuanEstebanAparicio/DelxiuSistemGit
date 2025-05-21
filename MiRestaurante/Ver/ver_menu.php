@@ -26,7 +26,7 @@ $nombre_restaurante = $usuario['nombre_restaurante'];
 <head>
   <meta charset="UTF-8">
   <title>Menú de <?= htmlspecialchars($nombre_restaurante) ?></title>
-  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="../Ver/css/estilos.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
@@ -145,13 +145,14 @@ function cargarCombosCliente() {
 
 
     function cargarPlatillos(idCategoria = null) {
-      let url = `../modelo/cargar_platillos.php?id_usuario=${usuarioId}`;
-      if (idCategoria) url += `&id_categoria=${idCategoria}`;
+  let url = `../modelo/cargar_platillos.php?id_usuario=${usuarioId}&cliente=1`; // pasa el modo cliente
+  if (idCategoria) url += `&id_categoria=${idCategoria}`;
 
-      fetch(url)
-        .then(res => res.json())
-        .then(data => renderPlatillos(data));
-    }
+  fetch(url)
+    .then(res => res.json())
+    .then(data => renderPlatillos(data));
+}
+
 
     document.addEventListener("DOMContentLoaded", () => {
       cargarCategorias();
