@@ -18,6 +18,7 @@
     <a href="#" class="btn azul">Gestion de menu</a>
         <a href="../Ver/registro_ingrediente.php" class="btn verde">Inventario</a>
         <a href="../Ver/Ver_inventario.php" class="btn red">Ver inventario</a>
+        <a href="../Ver/gestor_ordenes.php" class="btn amarillo">Gestor de ordenes </a>
     <div class="config-container">
       <button class="engranaje" onclick="toggleMenu()">⚙️</button>
       <div class="config-menu" id="configMenu">
@@ -50,6 +51,8 @@
 
 
 <script>
+  // Obtener usuarioId desde PHP si no existe aún
+const usuarioId = <?= json_encode($_SESSION['id_usuario'] ?? 0) ?>;
 function mostrarCombos() {
   fetch("../modelo/cargar_combos.php?t=" + new Date().getTime())
     .then(res => res.json())
@@ -66,10 +69,13 @@ function mostrarCombos() {
           <p class="text-sm text-gray-600">${combo.descripcion || "Sin descripción"}</p>
           <p class="text-green-700 font-bold mt-2">$${combo.precio_combo.toFixed(2)}</p>
           <span class="text-xs px-2 py-1 rounded-full ${
-            combo.estado === 'activo' 
-              ? 'bg-green-100 text-green-700' 
-              : 'bg-red-100 text-red-700'
-          }">${combo.estado}</span>
+  combo.estado === 'activo'
+    ? 'bg-green-100 text-green-700'
+    : combo.estado === 'agotado'
+      ? 'bg-yellow-100 text-yellow-800'
+      : 'bg-red-100 text-red-700'
+}">${combo.estado}</span>
+
           <div class="mt-2 flex space-x-2">
             <button onclick="editarCombo(${combo.id})" class="text-yellow-500 hover:text-yellow-700">✏️</button>
             <button onclick="eliminarCombo(${combo.id})" class="text-red-500 hover:text-red-700">🗑️</button>
@@ -86,6 +92,10 @@ function mostrarCombos() {
 }
 
 
+
+
+
+
 function editarCombo(id) {
   fetch(`../modelo/obtener_combo.php?id=${id}`)
     .then(res => res.json())
@@ -96,21 +106,31 @@ function editarCombo(id) {
       }
 
       abrirModalCombo();
-
+console.log("Datos del combo:", data);
+      
+      // Cargar datos al formulario
       document.getElementById("editIdCombo").value = data.id;
       document.querySelector("[name='nombre_combo']").value = data.nombre_combo;
       document.querySelector("[name='descripcion']").value = data.descripcion;
       document.querySelector("[name='precio_combo']").value = data.precio_combo;
-      document.querySelector("[name='estado']").value = data.estado || "activo";
 
-      fetch("../modelo/cargar_platillos.php?modo=combo")
+      // Estado editable solo si es activo o inactivo
+      const estado = data.estado;
+      const estadoSelect = document.querySelector("[name='estado']");
+      estadoSelect.value = ['activo', 'inactivo'].includes(estado) ? estado : 'inactivo';
+
+      // IDs de platillos seleccionados
+      const idsSeleccionados = data.platillos.map(id => parseInt(id));
+
+      // Cargar todos los platillos para checkboxes
+      fetch(`../modelo/cargar_platillos.php?id_usuario=${usuarioId}&modo=combo`)
         .then(res => res.json())
         .then(platillos => {
           const contenedor = document.getElementById("listaPlatillosCombo");
           contenedor.innerHTML = "";
 
           platillos.forEach(p => {
-            const checked = data.platillos.includes(p.id);
+            const checked = idsSeleccionados.includes(p.id);
             const label = document.createElement("label");
             label.className = "flex items-center space-x-2";
             label.innerHTML = `
@@ -126,6 +146,7 @@ function editarCombo(id) {
       alert("❌ No se pudo obtener el combo.");
     });
 }
+
 
 function eliminarCombo(id) {
   if (!confirm("¿Eliminar este combo?")) return;

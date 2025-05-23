@@ -43,7 +43,7 @@ $stmt->execute();
 $resIng = $stmt->get_result();
 
 while ($row = $resIng->fetch_assoc()) {
-  $vencido = ($row['fecha_vencimiento'] && $row['fecha_vencimiento'] < $hoy);
+  $vencido = ($row['fecha_vencimiento'] && $row['fecha_vencimiento'] <= $hoy);
   $noDisponible = in_array($row['estado'], ['agotado', 'no disponible', 'vencido']) || $vencido;
 
   if ($noDisponible) {

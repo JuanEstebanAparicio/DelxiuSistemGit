@@ -57,4 +57,53 @@ function actualizarEstadoPlatillosPorIngrediente(mysqli $conexion, int $id_ingre
 
   $stmt->close();
 }
+
+function actualizarEstadoCombosPorPlatillo(mysqli $conexion, int $id_platillo, int $usuario_id): void {
+  $sql = "
+    SELECT DISTINCT mc.id_combo
+    FROM menu_combo_detalles mcd
+    JOIN menu_combos mc ON mcd.combo_id = mc.id_combo
+    WHERE mcd.platillo_id = ? AND mc.usuario_id = ?
+  ";
+  $stmt = $conexion->prepare($sql);
+  $stmt->bind_param("ii", $id_platillo, $usuario_id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  while ($combo = $res->fetch_assoc()) {
+    $combo_id = $combo['id_combo'];
+
+    $sqlPlatillos = "
+      SELECT mp.estado
+      FROM menu_combo_detalles mcd
+      JOIN menu_platillo mp ON mcd.platillo_id = mp.id_platillo
+      WHERE mcd.combo_id = ? AND mp.usuario_id = ?
+    ";
+    $check = $conexion->prepare($sqlPlatillos);
+    $check->bind_param("ii", $combo_id, $usuario_id);
+    $check->execute();
+    $resultPlatillos = $check->get_result();
+
+    $agotado = false;
+    while ($row = $resultPlatillos->fetch_assoc()) {
+      if ($row['estado'] !== 'disponible') {
+        $agotado = true;
+        break;
+      }
+    }
+
+    $estado = $agotado ? 'agotado' : 'activo';
+    $update = $conexion->prepare("UPDATE menu_combos SET estado = ? WHERE id_combo = ?");
+    $update->bind_param("si", $estado, $combo_id);
+    $update->execute();
+    $update->close();
+    $check->close();
+  }
+
+  $stmt->close();
+}
+
+
+
+
 ?>

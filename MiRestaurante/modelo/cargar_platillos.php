@@ -15,22 +15,22 @@ $modoCliente = isset($_GET['cliente']); // si viene desde ver_menu
 $platillos = [];
 
 if ($id_categoria) {
-    $sql = "SELECT id_platillo, nombre, precio, foto, estado 
+    $sql = "SELECT id_platillo, nombre, precio, foto, estado, descripcion 
             FROM menu_platillo 
             WHERE usuario_id = ? AND id_categoria = ?";
     if ($modoCliente) {
-        $sql .= " AND estado = 'disponible'";
+        $sql .= " AND estado IN ('disponible', 'agotado')";
     }
     $sql .= " ORDER BY id_platillo DESC";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("ii", $usuario_id, $id_categoria);
 } else {
-    $sql = "SELECT id_platillo, nombre, precio, foto, estado 
+    $sql = "SELECT id_platillo, nombre, precio, foto, estado, descripcion 
             FROM menu_platillo 
             WHERE usuario_id = ?";
     if ($modoCliente) {
-        $sql .= " AND estado = 'disponible'";
+        $sql .= " AND estado IN ('disponible', 'agotado')";
     }
     $sql .= " ORDER BY id_platillo DESC";
 
@@ -47,7 +47,8 @@ while ($row = $result->fetch_assoc()) {
         'nombre' => $row['nombre'],
         'precio' => floatval($row['precio']),
         'foto' => $row['foto'] ?: '../uploads/platillos/default.png',
-        'estado' => $row['estado']
+        'estado' => $row['estado'],
+        'descripcion' => $row['descripcion'] ?? ''
     ];
 }
 

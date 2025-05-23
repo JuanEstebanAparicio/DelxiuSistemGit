@@ -211,6 +211,7 @@ $contador = [
     <a href="../Ver/gestor_menu.php" class="btn azul">Gestion de menu</a>
       <a href="../Ver/registro_ingrediente.php" class="btn verde">Inventario</a>
   <a href="#" class="btn red">Ver inventario</a>
+  <a href="../Ver/gestor_ordenes.php" class="btn amarillo">Gestor de ordenes </a>
   <div class="config-container">
     <button class="engranaje" onclick="toggleMenu()">⚙️</button>
     <div class="config-menu" id="configMenu">

@@ -2,6 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 require '../modelo/conexion.php';
+require_once 'funciones_estado.php'; // ✅ NUEVO: importar función de combos
 
 if (!isset($_SESSION['id_usuario'])) {
   echo json_encode(["error" => "Usuario no autenticado"]);
@@ -23,7 +24,6 @@ $estado_final = in_array($estado_input, ['disponible', 'no_disponible']) ? $esta
 $foto_actual = $_POST['foto_actual'] ?? '';
 $ingredientes = json_decode($_POST['ingredientes'] ?? '[]', true);
 
-// Validaciones
 if ($id <= 0 || $nombre === '' || $precio <= 0 || $categoria <= 0 || empty($ingredientes)) {
   echo json_encode(["error" => "Faltan datos requeridos"]);
   exit;
@@ -31,7 +31,7 @@ if ($id <= 0 || $nombre === '' || $precio <= 0 || $categoria <= 0 || empty($ingr
 
 $estado_forzado = false;
 
-// ⚠️ Verificar si algún ingrediente obliga a marcar el platillo como agotado
+// ✅ Validar estado por ingredientes
 foreach ($ingredientes as $ing) {
   $id_ing = intval($ing['id']);
   $res = $conexion->query("SELECT cantidad, estado, fecha_vencimiento FROM inventario WHERE id_Ingrediente = $id_ing AND usuario_id = $id_usuario");
@@ -48,18 +48,16 @@ foreach ($ingredientes as $ing) {
   }
 }
 
-// Manejar imagen
+// 📸 Manejo de imagen
 $foto_path = $foto_actual;
 if (!empty($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-  if ($foto_actual && file_exists($foto_actual)) {
-    unlink($foto_actual);
-  }
+  if ($foto_actual && file_exists($foto_actual)) unlink($foto_actual);
   $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
   $foto_path = '../uploads/platillos/' . uniqid('platillo_') . "." . $ext;
   move_uploaded_file($_FILES['foto']['tmp_name'], $foto_path);
 }
 
-// Actualizar platillo
+// 💾 Actualizar platillo
 $stmt = $conexion->prepare("
   UPDATE menu_platillo 
   SET nombre = ?, descripcion = ?, precio = ?, id_categoria = ?, tiempo_preparacion = ?, estado = ?, foto = ?
@@ -69,9 +67,8 @@ $stmt->bind_param("ssdisssii", $nombre, $descripcion, $precio, $categoria, $tiem
 $stmt->execute();
 $stmt->close();
 
-// Limpiar e insertar ingredientes
+// 🔁 Reinsertar ingredientes
 $conexion->query("DELETE FROM menu_platillo_ingredientes WHERE platillo_id = $id");
-
 $stmt = $conexion->prepare("
   INSERT INTO menu_platillo_ingredientes (platillo_id, ingrediente_id, cantidad_necesaria)
   VALUES (?, ?, ?)
@@ -86,10 +83,9 @@ foreach ($ingredientes as $ing) {
 }
 $stmt->close();
 
-// 🔁 Verificar si debe marcarse como agotado según insumos (segunda verificación post-DB)
+// 🔍 Segunda validación
 $agotado = false;
 $fecha_hoy = date("Y-m-d");
-
 $sql = "
   SELECT i.estado, i.cantidad, i.fecha_vencimiento, mpi.cantidad_necesaria
   FROM menu_platillo_ingredientes mpi
@@ -97,7 +93,6 @@ $sql = "
   WHERE mpi.platillo_id = $id AND i.usuario_id = $id_usuario
 ";
 $res = $conexion->query($sql);
-
 while ($row = $res->fetch_assoc()) {
   $estadoIng = $row['estado'];
   $cantidad = floatval($row['cantidad']);
@@ -113,9 +108,12 @@ while ($row = $res->fetch_assoc()) {
 $estadoFinal = $agotado ? 'agotado' : $estado_final;
 $conexion->query("UPDATE menu_platillo SET estado = '$estadoFinal' WHERE id_platillo = $id");
 
+// ✅ NUEVO: actualizar combos relacionados
+require_once 'funciones_estado.php';
+actualizarEstadoCombosPorPlatillo($conexion, $id, $id_usuario);
+
 echo json_encode([
   "success" => true,
   "estado_final" => $estadoFinal,
   "estado_forzado" => $estado_forzado ? "agotado" : null
 ]);
-?>

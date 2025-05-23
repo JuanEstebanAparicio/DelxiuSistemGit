@@ -106,4 +106,7 @@ if ($estado === 'disponible') {
     }
 }
 
+require_once 'funciones_estado.php';
+actualizarEstadoCombosPorPlatillo($conexion, $id_platillo, $id_usuario);
+
 echo json_encode(["success" => true]);

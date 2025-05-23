@@ -65,7 +65,7 @@
     <a href="../Ver/gestor_menu.php" class="btn azul">Gestion de menu</a>
     <a href="#" class="btn verde">Inventario</a>
     <a href="../Ver/Ver_inventario.php" class="btn red">Ver inventario</a>
-
+    <a href="../Ver/gestor_ordenes.php" class="btn amarillo">Gestor de ordenes </a>
 
 
     <div class="config-container">
