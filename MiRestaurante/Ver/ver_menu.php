@@ -51,7 +51,12 @@ $nombre_restaurante = $usuario['nombre_restaurante'];
     <h2 id="modalNombrePlatillo" class="text-xl font-bold mb-2"></h2>
     <p id="modalDescripcionPlatillo" class="text-gray-600 mb-2"></p>
     <p id="modalPrecioPlatillo" class="text-green-700 font-bold text-lg mb-2"></p>
-    <ul id="modalIngredientes" class="text-sm text-gray-700 mb-4 list-disc list-inside"></ul>
+
+<label class="block text-sm font-medium mb-1">Cantidad:</label>
+<input type="number" id="inputCantidadPlatillo" min="1" max="3" value="1" class="w-full mb-2 border rounded px-3 py-2" />
+<small id="textoMaximo" class="text-xs text-gray-500">Máximo disponible: 3</small>
+
+<ul id="modalIngredientes" class="text-sm text-gray-700 mb-4 list-disc list-inside"></ul>
     <button id="btnOrdenar" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">Ordenar</button>
   </div>
 </div>
@@ -140,9 +145,18 @@ function mostrarModalPlatillo(p) {
   document.getElementById("modalNombrePlatillo").textContent = p.nombre;
   document.getElementById("modalDescripcionPlatillo").textContent = p.descripcion || "Sin descripción.";
   document.getElementById("modalPrecioPlatillo").textContent = `$${p.precio.toFixed(2)}`;
-  document.getElementById("btnOrdenar").disabled = p.estado === 'agotado';
-  document.getElementById("btnOrdenar").onclick = () => agregarABandeja(p);
 
+  const inputCantidad = document.getElementById("inputCantidadPlatillo");
+  const textoMax = document.getElementById("textoMaximo");
+  const btnOrdenar = document.getElementById("btnOrdenar");
+
+  // Por defecto
+  inputCantidad.value = 1;
+  inputCantidad.max = 1;
+  btnOrdenar.disabled = true;
+  textoMax.textContent = "Verificando disponibilidad...";
+
+  // Cargar ingredientes
   const ul = document.getElementById("modalIngredientes");
   ul.innerHTML = "Cargando...";
   fetch(`../modelo/obtener_ingrediente_por_platillo.php?id=${p.id}`)
@@ -156,6 +170,17 @@ function mostrarModalPlatillo(p) {
       });
     });
 
+  // Consultar cantidad máxima disponible
+  fetch(`../modelo/cantidad_disponible_platillo.php?id=${p.id}&usuario_id=${usuarioId}`)
+    .then(res => res.json())
+    .then(result => {
+      const max = parseInt(result.max_disponible) || 0;
+      inputCantidad.max = max;
+      textoMax.textContent = `Máximo disponible: ${max}`;
+      btnOrdenar.disabled = max <= 0;
+    });
+
+  btnOrdenar.onclick = () => agregarABandeja(p);
   document.getElementById("modalDetallePlatillo").classList.remove("hidden");
 }
 
@@ -169,12 +194,27 @@ function agregarABandeja(p) {
     return;
   }
 
-  carrito.push(p);
+  const inputCantidad = document.getElementById("inputCantidadPlatillo");
+  const cantidad = parseInt(inputCantidad.value) || 1;
+  const max = parseInt(inputCantidad.max) || 1;
+
+  if (cantidad <= 0) {
+    mostrarToast("⚠️ Cantidad inválida", "bg-yellow-600");
+    return;
+  }
+
+  if (cantidad > max) {
+    mostrarToast(`⚠️ Solo puedes pedir máximo ${max} unidades`, "bg-yellow-600");
+    return;
+  }
+
+  carrito.push({ ...p, cantidad });
   localStorage.setItem("bandeja", JSON.stringify(carrito));
   actualizarContador();
   cerrarModalDetalle();
-  mostrarToast(`✅ ${p.nombre} agregado a la bandeja`, "bg-green-600");
+  mostrarToast(`✅ ${p.nombre} x${cantidad} agregado`, "bg-green-600");
 }
+
 
 
 function actualizarContador() {
@@ -193,18 +233,20 @@ function verBandeja() {
       const li = document.createElement("li");
       li.className = "flex justify-between items-center py-1";
 
+      const subtotal = p.precio * (p.cantidad || 1);
       li.innerHTML = `
-        <span>${p.nombre} - $${p.precio.toFixed(2)}</span>
+        <span>${p.nombre} ×${p.cantidad || 1} - $${subtotal.toFixed(2)}</span>
         <button onclick="eliminarDeBandeja(${index})" class="text-red-500 hover:text-red-700 text-sm font-semibold ml-2">Eliminar</button>
       `;
       lista.appendChild(li);
-      total += p.precio;
+      total += subtotal;
     });
   }
 
   document.getElementById("totalBandeja").textContent = `Total: $${total.toFixed(2)}`;
   document.getElementById("modalBandeja").classList.remove("hidden");
 }
+
 
 
 function cerrarModalBandeja() {

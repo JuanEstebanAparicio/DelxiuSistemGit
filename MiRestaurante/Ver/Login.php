@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="../assets/darkmode.css">
+ 
   <style>
     :root {
       --bg-color: #f0f0f0;
@@ -104,7 +104,7 @@
 </head>
 
 <body>
-  <?php include("../Ver/assets/darkmode-toggle.html"); ?>
+
 
   <div class="login-container">
     <h1>Inicie Sesión</h1>
@@ -122,6 +122,6 @@
     </form>
   </div>
 
-  <script src="../assets/darkmode.js"></script>
+
 </body>
 </html>

@@ -8,7 +8,8 @@ if (!$id_usuario) {
   exit;
 }
 
-$sql = "SELECT * FROM ordenes WHERE usuario_id = ? ORDER BY id DESC";
+$sql = "SELECT * FROM ordenes WHERE usuario_id = ? AND eliminada = 0 ORDER BY id DESC";
+
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();

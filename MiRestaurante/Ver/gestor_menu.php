@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("id_categoria", id);
 
-      fetch("../modulo/Eliminar_categoria.php", {
+      fetch("../modelo/Eliminar_categoria.php", {
         method: "POST",
         body: formData
       })

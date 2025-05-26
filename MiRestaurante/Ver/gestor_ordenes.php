@@ -50,6 +50,7 @@ $id_usuario = $_SESSION['id_usuario'];
       <button onclick="cargarOrdenes()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
         🔄 Actualizar Órdenes
       </button>
+      
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="kanbanOrdenes">
   <div>
@@ -64,11 +65,64 @@ $id_usuario = $_SESSION['id_usuario'];
     <h2 class="text-lg font-bold mb-2 text-green-800">✅ Listas / Entregadas</h2>
     <div id="ordenesListas" class="space-y-4"></div>
   </div>
+   <div class="mt-10">
+  <h2 class="text-lg font-bold mb-3 text-red-700">🗑️ Papelera</h2>
+  <div id="contenedorPapelera" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</div>
+
+  
 </div>
 
   </main>
 
 <script>
+
+  function cargarPapelera() {
+  fetch('../modelo/cargar_papelera.php')
+    .then(res => res.json())
+    .then(data => {
+      const papelera = document.getElementById("contenedorPapelera");
+      papelera.innerHTML = "";
+
+      data.forEach(o => {
+        const productos = o.detalles.map(p => `<li>${p.nombre} - $${parseFloat(p.precio).toFixed(2)}</li>`).join("");
+
+        papelera.innerHTML += `
+          <div class="bg-red-50 border border-red-300 p-4 rounded shadow">
+            <h3 class="font-bold text-red-700">Orden #${o.id}</h3>
+            <p><strong>${o.cliente_nombre}</strong> - ${o.cliente_contacto}</p>
+            <p><strong>Mesa:</strong> ${o.mesa ?? "-"}</p>
+            <ul class="list-disc ml-4 text-sm">${productos}</ul>
+            <div class="flex gap-2 mt-2">
+              <button onclick="restaurarOrden(${o.id})" class="text-sm bg-blue-600 text-white px-2 py-1 rounded">♻️ Restaurar</button>
+              <button onclick="eliminarDefinitivo(${o.id})" class="text-sm bg-red-600 text-white px-2 py-1 rounded">🗑️ Borrar</button>
+            </div>
+          </div>
+        `;
+      });
+    });
+}
+
+function restaurarOrden(id) {
+  fetch('../modelo/restaurar_orden.php', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  }).then(() => {
+    cargarPapelera();
+    cargarOrdenes();
+  });
+}
+
+function eliminarDefinitivo(id) {
+  if (!confirm("¿Eliminar esta orden permanentemente?")) return;
+  fetch('../modelo/eliminar_orden_definitiva.php', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  }).then(() => cargarPapelera());
+}
+
 
 function actualizarEstado(id, nuevoEstado) {
   fetch('../modelo/actualizar_estado_orden.php', {
@@ -164,7 +218,14 @@ function eliminarOrden(id) {
   }).then(() => cargarOrdenes());
 }
 
-document.addEventListener("DOMContentLoaded", cargarOrdenes);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarOrdenes();
+  cargarPapelera();
+});
+setInterval(() => {
+  cargarOrdenes();
+  cargarPapelera();
+}, 10000);
 </script>
 
 </body>
