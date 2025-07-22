@@ -1,4 +1,5 @@
-/* CSS/inicio.css */
+
+/*Estilos de fondo de la pagina y los botones*/
 
 html, body {
   margin: 0;
@@ -84,7 +85,7 @@ p {
 .btn2:hover {
   background: #ffffff;
 }
-
+/*Animacion y efecto de maquina de escribir de slogans*/
 @keyframes fadeSlideUp {
   0% {
     opacity: 0;
@@ -110,7 +111,7 @@ p:hover {
   color: #ffc;
   transition: color 0.3s ease;
 }
-
+/*Animacion de nombre de letra una por una*/
 @keyframes letterInEffect {
   0% {
     opacity: 0;

@@ -53,7 +53,7 @@ function draw() {
 }
 
 draw()
-
+// Animación de maquina de escribir
 new Typed("#typed-text", {
   strings: [
     "Gestiona tu restaurante con estilo",
@@ -65,13 +65,13 @@ new Typed("#typed-text", {
   backDelay: 2000,
   loop: true
 })
-
+// Animación de nombre
 function animateTitleLetters(selector = '.animated-title') {
   const title = document.querySelector(selector)
   if (!title) return
 
   const text = title.textContent
-  title.textContent = ''
+
 
   text.split('').forEach((char, i) => {
     const span = document.createElement('span')
