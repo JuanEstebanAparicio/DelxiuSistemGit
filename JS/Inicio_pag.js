@@ -72,7 +72,7 @@ function animateTitleLetters(selector = '.animated-title') {
 
   const text = title.textContent
 
-
+title.textContent = ''
   text.split('').forEach((char, i) => {
     const span = document.createElement('span')
     span.textContent = char
