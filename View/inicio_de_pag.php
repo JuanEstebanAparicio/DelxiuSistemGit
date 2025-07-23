@@ -20,9 +20,7 @@
     <button class="btn2" onclick="showModal('modalRegistro')">Registrarse</button>
   </div>
 
-  <script src="../JS/modales.js"></script>
-  <script src="../JS/registro.js"></script>
-  <script src="../JS/verificacion-codigo.js"></script>
+
 
   <!-- VANTA + THREE -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -121,6 +119,9 @@
 
 
   
-
+<!-- Al final de tu HTML, justo antes del </body> -->
+<script src="../JS/registro.js"></script>
+  <script src="../JS/modales.js"></script>
+  <script src="../JS/verificacion-codigo.js"></script>
 </body>
 </html>

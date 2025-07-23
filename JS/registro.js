@@ -24,56 +24,39 @@ function togglePass(id, btn) {
     `
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const btnCrear = document.getElementById('btn-crear-cuenta');
+document.getElementById('btn-crear-cuenta').addEventListener('click', async () => {
+  const nombre = document.getElementById('nombre_usuario').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+  const restaurante = document.getElementById('nombre_restaurante').value.trim();
+  const clave = document.getElementById('clave').value;
+  const confirmar = document.getElementById('confirmar_clave').value;
+  const error = document.getElementById('errorPass');
 
-  btnCrear.addEventListener('click', function () {
-    const nombre = document.getElementById('nombre_usuario').value.trim();
-    const correo = document.getElementById('correo').value.trim();
-    const clave = document.getElementById('clave').value;
-    const confirmar = document.getElementById('confirmar_clave').value;
-    const restaurante = document.getElementById('nombre_restaurante').value.trim();
-    const errorPass = document.getElementById('errorPass');
+  if (clave !== confirmar) {
+    error.style.display = 'block';
+    return;
+  } else {
+    error.style.display = 'none';
+  }
 
-    // Validar campos obligatorios
-    if (!nombre || !correo || !clave || !confirmar || !restaurante) {
-      alert('Todos los campos son obligatorios');
-      return;
-    }
+  const formData = new FormData();
+  formData.append('nombre_usuario', nombre);
+  formData.append('correo', correo);
+  formData.append('nombre_restaurante', restaurante);
+  formData.append('clave', clave);
 
-    // Validar contraseña y confirmación
-    if (clave !== confirmar) {
-      errorPass.style.display = 'block';
-      return;
-    } else {
-      errorPass.style.display = 'none';
-    }
-
-    // Preparar datos para enviar
-    const formData = new FormData();
-    formData.append('nombre_usuario', nombre);
-    formData.append('correo', correo);
-    formData.append('clave', clave);
-    formData.append('nombre_restaurante', restaurante);
-
-    fetch('../Controller/registro_temp.php', {
-
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.text())
-      .then(res => {
-        
-  if (res.includes('enviado')) {
-  document.getElementById('correo_verificar').value = correo;  // 🔴 CRUCIAL
-  hideModal('modalRegistro');
-  showModal('modalCodigo');
-}else {
-          alert('Error al registrar: ' + res);
-        }
-      })
-      .catch(err => {
-        alert('Error de conexión: ' + err);
-      });
+  const response = await fetch('../Controller/RegistroController.php', {
+    method: 'POST',
+    body: formData
   });
+  const result = await response.json();
+
+  if (result.status === 'ok') {
+    document.getElementById('correo_verificar').value = correo;
+    hideModal('modalRegistro');
+    showModal('modalCodigo');
+  } else {
+    alert(result.msg || 'Error en el registro.');
+  }
 });
+
