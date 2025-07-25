@@ -40,8 +40,9 @@
     <button class="close" onclick="hideModal('modalLogin')">&times;</button>
     <h2>Iniciar Sesión</h2>
     <form>
-    <Label>Ingrese su Usuario</Label>    
-    <input type="text" placeholder="Usuario" required />
+    <Label>Ingrese su correo</Label>    
+    <input type="email" placeholder="Correo" required />
+    <Label>Ingrese su contraseña</Label>
     <input type="password" placeholder="Contraseña" required />
       <button type="submit" class="modal-btn">Entrar</button>
     </form>
@@ -120,6 +121,7 @@
 
   
 <!-- Al final de tu HTML, justo antes del </body> -->
+ <script src="../JS/login.js"></script>
 <script src="../JS/registro.js"></script>
   <script src="../JS/modales.js"></script>
   <script src="../JS/verificacion-codigo.js"></script>
