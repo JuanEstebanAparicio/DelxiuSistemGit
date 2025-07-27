@@ -100,6 +100,7 @@
   <div class="modal-content">
     <h3>Verifica tu correo</h3>
     <p>Introduce el código que enviamos a tu correo:</p>
+    <span id="correo_mostrado_span" style="font-weight: bold; color: #009688;"></span>
 
     <!-- 🔴 ESTO ES LO QUE FALTABA -->
     <input type="hidden" id="correo_verificar" />
@@ -114,6 +115,10 @@
     </div>
 
     <button onclick="verificarCodigo()">Verificar Código</button>
+    <button onclick="volverARegistro()" style="margin-top: 10px; background-color: #ccc; color: #333;">
+  ⬅️ Volver
+</button>
+
     <p id="mensajeCodigo" style="margin-top:10px;"></p>
   </div>
 </div>
@@ -125,5 +130,35 @@
 <script src="../JS/registro.js"></script>
   <script src="../JS/modales.js"></script>
   <script src="../JS/verificacion-codigo.js"></script>
+<script>
+  // Cuando se abra el modal de código, consultar y mostrar el correo
+  const modalCodigo = document.getElementById('modalCodigo');
+
+  const observer = new MutationObserver(() => {
+    if (!modalCodigo.classList.contains('hidden')) {
+      fetch('../Controller/ObtenerCorreoTemp.php')
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            document.getElementById('correo_mostrado_span').textContent = data.correo;
+          }
+        });
+    }
+  });
+
+  observer.observe(modalCodigo, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+</script>
+
+<script>
+  function volverARegistro() {
+    hideModal('modalCodigo');
+    showModal('modalRegistro');
+  }
+</script>
+
+
 </body>
 </html>
