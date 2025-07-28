@@ -1,46 +1,76 @@
 <?php
 $baseDir = dirname(dirname(__DIR__));
-require_once($baseDir . '/Model/entity/Conexion.php');
-class AlmacenCrud {
+require_once($baseDir . '../Model/Entity/Conexion.php');
+require_once($baseDir . '../Model/Entity/productos.php'); 
+
+class Insumo_crud {
     private $conexion;
-    private $root; // Raíz del proyecto
 
     public function __construct() {
-        $this->conexion = Conexion::obtenerConexion();
-        $this->root = dirname(dirname(__DIR__)); 
+        try {
+            $this->conexion = Conexion::obtenerConexion();
+        } catch (Exception $e) {
+            error_log("Error al obtener conexión en Insumo_crud: " . $e->getMessage());
+            throw new Exception("Error interno. Intente más tarde.");
+        }
     }
 
-    // Método para agregar un producto al almacén
-    public function agregarProducto($nombre, $cantidad, $precio) {
-        $sql_insert = "INSERT INTO productos (nombre, cantidad, precio) VALUES (?, ?, ?)";
-        $stmt = $this->conexion->prepare($sql_insert);
+    public function crearInsumo(Ingrediente $insumo) {
+        if (empty($insumo->getNombre()) || empty($insumo->getCantidad()) || empty($insumo->getUnidad())) {
+            throw new Exception("Los campos obligatorios no pueden estar vacíos.");
+        }
+
+        $sql = "INSERT INTO insumos 
+        (nombre, cantidad, cantidad_minima, unidad, costo_unitario, categoria, fecha_ingreso, fecha_vencimiento, lote, descripcion, ubicacion, estado, proveedor, foto)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $this->conexion->prepare($sql);
+
         if (!$stmt) {
-            error_log("❌ Error al preparar la inserción de producto: " . $this->conexion->error);
-            return false;
+            error_log("❌ Error al preparar consulta de inserción: " . $this->conexion->error);
+            throw new Exception("Error al preparar la inserción de insumo.");
         }
-        $stmt->bind_param("sid", $nombre, $cantidad, $precio);
-        if (!$stmt->execute()) {
-            error_log("⚠️ Error al agregar producto: " . $stmt->error);
-            return false;
-        }
-        $stmt->close();
-        error_log("✅ Producto agregado correctamente: $nombre");
-        return true;
-    }
 
-    // Método para obtener todos los productos del almacén
-    public function obtenerProductos() {
-        $sql = "SELECT * FROM productos";
-        $resultado = $this->conexion->query($sql);
-        if (!$resultado) {
-            error_log("❌ Error al obtener productos: " . $this->conexion->error);
-            return [];
+        $nombre = $insumo->getNombre();
+        $cantidad = $insumo->getCantidad();
+        $cantidad_minima = $insumo->getCantidadMinima();
+        $unidad = $insumo->getUnidad();
+        $costo_unitario = $insumo->getCostoUnitario();
+        $categoria = $insumo->getCategoria();
+        $fecha_ingreso = $insumo->getFechaIngreso();
+        $fecha_vencimiento = $insumo->getFechaVencimiento();
+        $lote = $insumo->getLote();
+        $descripcion = $insumo->getDescripcion();
+        $ubicacion = $insumo->getUbicacion();
+        $estado = $insumo->getEstado();
+        $proveedor = $insumo->getProveedor();
+        $foto = $insumo->getFoto();
+
+        $stmt->bind_param(
+            "dddsssssssssss",
+            $nombre,
+            $cantidad,
+            $cantidad_minima,
+            $unidad,
+            $costo_unitario,
+            $categoria,
+            $fecha_ingreso,
+            $fecha_vencimiento,
+            $lote,
+            $descripcion,
+            $ubicacion,
+            $estado,
+            $proveedor,
+            $foto
+        );
+
+        if (!$stmt->execute()) {
+            error_log("❌ Error al ejecutar inserción de insumo: " . $stmt->error);
+            throw new Exception("No se pudo registrar el insumo.");
         }
-        $productos = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $productos[] = $row;
-        }
-        return $productos;
+
+        $stmt->close();
+        return true;
     }
 }
 ?>
