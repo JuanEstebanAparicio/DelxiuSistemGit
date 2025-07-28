@@ -3,10 +3,13 @@
 
 session_start();
 require_once __DIR__ . '/../Model/Entity/Usuario.php';
+require_once __DIR__ . '/conexion.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo = $_POST['correo'] ?? '';
     $clave  = $_POST['clave'] ?? '';
+    $recordarme = isset($_POST['recordarme']);
 
     $usuarioModel = new Usuario();
     $usuario = $usuarioModel->buscarPorCorreo($correo);
@@ -18,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'rol' => $usuario['usuario_rol']
         ];
 
+        if ($recordarme && !empty($usuario['usuario_token'])) {
+            setcookie('remember_token', $usuario['usuario_token'], time() + (86400 * 30), "/", "", false, true); // 30 días, httpOnly
+        }
+
         echo json_encode(['status' => 'ok']);
     } else {
         echo json_encode(['status' => 'error', 'msg' => 'Correo o contraseña incorrectos']);
@@ -26,3 +33,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 http_response_code(405);
+

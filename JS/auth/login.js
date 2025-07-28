@@ -8,10 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const correo = loginForm.querySelector('input[type="email"]').value.trim();
     const clave = loginForm.querySelector('input[type="password"]').value.trim();
+    const recordar = loginForm.querySelector('#recordarme')?.checked;
 
     const formData = new FormData();
     formData.append('correo', correo);
     formData.append('clave', clave);
+    if (recordar) {
+      formData.append('recordarme', 'on');
+    }
 
     try {
       const response = await fetch('../Controller/LoginController.php', {

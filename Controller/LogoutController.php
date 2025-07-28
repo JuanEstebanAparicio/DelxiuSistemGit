@@ -7,6 +7,12 @@ session_start();
 session_unset();
 session_destroy();
 
+// Eliminar cookie remember_token si existe
+if (isset($_COOKIE['remember_token'])) {
+    setcookie('remember_token', '', time() - 3600, '/');
+}
+
 // Redirige al inicio (o login)
 header('Location: ../View/inicio_de_pag.php');
 exit;
+

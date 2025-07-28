@@ -34,23 +34,32 @@
 
 
 
-<!-- Modal para Iniciar sesion -->
+<!-- Modal para Iniciar sesión -->
 <div id="modalLogin" class="modal hidden">
   <div class="modal-content">
     <button class="close" onclick="hideModal('modalLogin')">&times;</button>
     <h2>Iniciar Sesión</h2>
-    <form>
-    <Label>Ingrese su correo</Label>    
-    <input type="email" placeholder="Correo" required />
-    <Label>Ingrese su contraseña</Label>
-    <input type="password" placeholder="Contraseña" required />
-      <button type="submit" class="modal-btn">Entrar</button>
+    <form style="display: flex; flex-direction: column; align-items: center;">
+      <label>Ingrese su correo</label>
+      <input type="email" name="correo" placeholder="Correo" required style="width: 100%; max-width: 300px;" />
+
+      <label>Ingrese su contraseña</label>
+      <input type="password" name="clave" placeholder="Contraseña" required style="width: 100%; max-width: 300px;" />
+
+      <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px;">
+        <input type="checkbox" id="recordarme" name="recordarme" />
+        <label for="recordarme" style="margin: 0;">Recordarme</label>
+      </div>
+
+      <button type="submit" class="modal-btn" style="margin-top: 10px;">Entrar</button>
     </form>
+
     <div style="margin-top: 10px; text-align: center;">
       <a href="#" onclick="showModal('modalRecuperar')">¿Olvidaste tu contraseña?</a>
     </div>
   </div>
 </div>
+
 
 <!-- Modal para Registrarse -->
 <div id="modalRegistro" class="modal hidden">
