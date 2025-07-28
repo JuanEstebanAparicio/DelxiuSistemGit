@@ -30,7 +30,7 @@
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   
   <!-- Script de emogis-->
-<script src="../JS/Inicio_pag.js"></script>
+<script src="../JS/animations/Inicio_pag.js"></script>
 
 
 
@@ -46,6 +46,9 @@
     <input type="password" placeholder="Contraseña" required />
       <button type="submit" class="modal-btn">Entrar</button>
     </form>
+    <div style="margin-top: 10px; text-align: center;">
+      <a href="#" onclick="showModal('modalRecuperar')">¿Olvidaste tu contraseña?</a>
+    </div>
   </div>
 </div>
 
@@ -123,13 +126,27 @@
   </div>
 </div>
 
-
+<!-- Modal Recuperar Contraseña -->
+<div id="modalRecuperar" class="modal hidden">
+  <div class="modal-content">
+    <button class="close" onclick="hideModal('modalRecuperar')">&times;</button>
+    <h2>Recuperar Contraseña</h2>
+    <form id="formRecuperar">
+      <label>Correo registrado</label>
+      <input type="email" id="recuperarCorreo" name="correo" placeholder="Ingresa tu correo" required />
+      <button type="submit" class="modal-btn">Enviar enlace de recuperación</button>
+    </form>
+    <div id="recuperarMensaje" style="margin-top: 10px; color: green; display: none;"></div>
+  </div>
+</div>
   
 <!-- Al final de tu HTML, justo antes del </body> -->
- <script src="../JS/login.js"></script>
-<script src="../JS/registro.js"></script>
-  <script src="../JS/modales.js"></script>
-  <script src="../JS/verificacion-codigo.js"></script>
+ <script src="../JS/auth/login.js"></script>
+<script src="../JS/auth/registro.js"></script>
+  <script src="../JS/animations/modales.js"></script>
+  <script src="../JS/auth/verificacion-codigo.js"></script>
+  <script src="../JS/auth/forgot-password.js" defer></script>
+
 <script>
   // Cuando se abra el modal de código, consultar y mostrar el correo
   const modalCodigo = document.getElementById('modalCodigo');

@@ -48,6 +48,47 @@ class Correo {
             return false;
         }
     }
+
+ public static function enviarRecuperacion($correoDestino, $enlace) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'delixiusistem@gmail.com';
+            $mail->Password = 'ftlecotbnugecwpe';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom('delixiusistem@gmail.com', 'DelixiuSystem');
+            $mail->addAddress($correoDestino);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Recuperar tu contraseña - DelixiuSystem';
+            $mail->Body = "
+            <html><body style='font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px;'>
+                <div style='max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+                    <h2 style='color: #333;'>Recuperar contraseña</h2>
+                    <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
+                    <p style='text-align: center;'>
+                        <a href='$enlace' style='display: inline-block; background: #007BFF; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;'>Restablecer contraseña</a>
+                    </p>
+                    <p>Si tú no realizaste esta solicitud, puedes ignorar este mensaje.</p>
+                    <p style='color: gray;'>Este enlace es válido por tiempo limitado.</p>
+                </div>
+            </body></html>";
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+
+
+
+
+
 }
 
 
