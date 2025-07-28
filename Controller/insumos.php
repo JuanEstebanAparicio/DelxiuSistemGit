@@ -6,8 +6,8 @@ require_once($baseDir . '/Model/Entity/productos.php');
 require_once($baseDir . '/Model/Crud/almacen_crud.php');
 
 try {
-    // Validar si vienen datos
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Obtener datos del formulario
         $nombre = $_POST['nombre'] ?? '';
         $cantidad = $_POST['cantidad'] ?? 0;
         $cantidad_minima = $_POST['cantidad_minima'] ?? 0;
@@ -22,7 +22,7 @@ try {
         $estado = $_POST['estado'] ?? '';
         $proveedor = $_POST['proveedor'] ?? '';
 
-        // Subida de imagen
+        // Procesar imagen
         $fotoNombre = null;
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
             $fotoTmp = $_FILES['foto']['tmp_name'];
@@ -49,25 +49,19 @@ try {
             $fotoNombre
         );
 
-        // Llamar al CRUD para insertar
-        $crud = new AlmacenCrud();
-        $resultado = $crud->agregarProducto($nombre, $cantidad, $costo_unitario);
+        // Llamar a la función de AlmacenCrud
+        $crud = new Insumo_crud();
+        $crud->crearInsumo($insumo);
 
-        if ($resultado) {
-            $_SESSION['mensaje_exito'] = "Insumo registrado correctamente.";
-        } else {
-            $_SESSION['mensaje_error'] = "Ocurrió un error al registrar el insumo.";
-        }
-
+        $_SESSION['mensaje_exito'] = "Insumo registrado correctamente.";
         header("Location: ../View/gestor_ingredientes.php");
         exit();
     } else {
         throw new Exception("Método de solicitud no válido.");
     }
-
 } catch (Exception $e) {
-    error_log("❌ Error en insertar_ingrediente.php: " . $e->getMessage());
-    $_SESSION['mensaje_error'] = "Error al procesar el registro.";
+    error_log("❌ Error al registrar insumo: " . $e->getMessage());
+    $_SESSION['mensaje_error'] = "Error al registrar el insumo.";
     header("Location: ../View/gestor_ingredientes.php");
     exit();
 }
