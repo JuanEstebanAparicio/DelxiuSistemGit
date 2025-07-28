@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
     button { width: 100%; padding: 10px; background: #007BFF; color: white; border: none; border-radius: 5px; }
     .error { color: red; }
     .success { color: green; }
+    .volver-btn { display: inline-block; margin-top: 20px; text-align: center; background: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
   </style>
   <?php if ($ok): ?>
     <meta http-equiv="refresh" content="5;url=../View/inicio_de_pag.php">
@@ -64,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
     </form>
   <?php else: ?>
     <p class="error">Token inválido o faltante.</p>
+    <a href="../View/inicio_de_pag.php" class="volver-btn">Volver al inicio</a>
   <?php endif; ?>
 </div>
 </body>
