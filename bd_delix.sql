@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-07-2025 a las 22:58:00
+-- Tiempo de generación: 28-07-2025 a las 23:19:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -36,15 +36,16 @@ CREATE TABLE `usuarios` (
   `usuario_estado` enum('activo','bloqueado') DEFAULT 'activo',
   `usuario_rol` enum('admin','usuario') DEFAULT 'usuario',
   `usuario_token` varchar(255) DEFAULT NULL,
-  `usuario_creacion` datetime DEFAULT current_timestamp()
+  `usuario_creacion` datetime DEFAULT current_timestamp(),
+  `recuperar_token` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`usuario_id`, `usuario_nombre`, `usuario_correo`, `usuario_clave`, `usuario_restaurante`, `usuario_estado`, `usuario_rol`, `usuario_token`, `usuario_creacion`) VALUES
-(23, 'Juan', 'apariciojuanesteban@gmail.com', '$2y$10$X8XghwaFzmY1nPQWhPtPHuOJH/nEjAZKyGVsQii1BiXb1DpH8tDjG', 'resturantex', 'activo', 'usuario', '87f674a353957a98e618f416ad9253e4f9b1bcee1c343647da1b61fe0ac8d431', '2025-07-25 12:41:52');
+INSERT INTO `usuarios` (`usuario_id`, `usuario_nombre`, `usuario_correo`, `usuario_clave`, `usuario_restaurante`, `usuario_estado`, `usuario_rol`, `usuario_token`, `usuario_creacion`, `recuperar_token`) VALUES
+(42, 'Juan', 'apariciojuanesteban@gmail.com', '$2y$10$kQsBWc9MpL3o6DELuE7oPe8zLEqliUTpLm0pNdwUQd8AZd4NBif3q', 'la rica braza', 'activo', 'usuario', '4bb17055e8a7ecba3f3f5f5603c6916b74e87bfc3464a659535ece64adb27c33', '2025-07-28 12:32:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -88,13 +89,13 @@ ALTER TABLE `usuarios_temp`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_temp`
 --
 ALTER TABLE `usuarios_temp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 DELIMITER $$
 --
