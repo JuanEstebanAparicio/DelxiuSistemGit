@@ -1,6 +1,6 @@
 <?php
 // reset-password.php
-require_once 'conexion.php';
+require_once __DIR__ . '/conexion.php';
 
 $token = $_GET['token'] ?? '';
 $error = '';
@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
         }
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -43,13 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
     .error { color: red; }
     .success { color: green; }
   </style>
+  <?php if ($ok): ?>
+    <meta http-equiv="refresh" content="5;url=../View/inicio_de_pag.php">
+  <?php endif; ?>
 </head>
 <body>
 <div class="box">
   <h2>Restablecer Contraseña</h2>
 
   <?php if ($ok): ?>
-    <p class="success">Tu contraseña ha sido cambiada exitosamente.</p>
+    <p class="success">Tu contraseña ha sido cambiada exitosamente. Redirigiendo al inicio de sesión...</p>
   <?php elseif ($token): ?>
     <form method="POST">
       <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
