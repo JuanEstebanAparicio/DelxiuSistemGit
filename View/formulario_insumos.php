@@ -9,34 +9,72 @@ if (isset($_SESSION['usuario'])) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agregar Insumos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Ingrediente</title>
   <link rel="stylesheet" href="../CSS/insumos.css">
 </head>
 <body>
   <div class="content">
-    <h2>Agregar Insumos</h2>
-    <form action="insertar_insumos.php" method="POST">
-      <label for="nombre">Nombre (ID Producto):</label>
-      <input type="number" id="nombre" name="nombre" required><br>
+    <h2>Registrar Ingrediente</h2>
+    <form action="insertar_ingrediente.php" method="POST" enctype="multipart/form-data">
+      <label>Nombre del ingrediente:</label>
+      <input type="text" name="nombre" placeholder="Ej: Tomate" required>
 
-      <label for="n_lote">Número de Lote:</label>
-      <input type="number" id="n_lote" name="n_lote" required><br>
+      <label>Cantidad:</label>
+      <input type="number" name="cantidad" required>
 
-      <label for="cantidad">Cantidad:</label>
-      <input type="number" id="cantidad" name="cantidad" required><br>
+      <label>Cantidad mínima:</label>
+      <input type="number" name="cantidad_minima" required>
 
-      <label for="c_por_lote">Cantidad por Lote:</label>
-      <input type="number" id="c_por_lote" name="c_por_lote" required><br>
+      <label>Unidad de medida:</label>
+      <select name="unidad" required>
+        <option value="">Seleccione unidad</option>
+        <option value="Kg">Kg</option>
+        <option value="Litro">Litro</option>
+        <option value="Unidad">Unidad</option>
+      </select>
 
-      <label for="f_entrada">Fecha Entrada (YYYYMMDD):</label>
-      <input type="number" id="f_entrada" name="f_entrada" required><br>
+      <label>Costo unitario:</label>
+      <input type="number" step="0.01" name="costo_unitario" required>
 
-      <label for="f_caducidad">Fecha Caducidad (YYYYMMDD):</label>
-      <input type="number" id="f_caducidad" name="f_caducidad" required><br>
+      <label>Categoría:</label>
+      <select name="categoria" required>
+        <option value="">Seleccione categoría</option>
+        <option value="Vegetal">Vegetal</option>
+        <option value="Carne">Carne</option>
+        <option value="Bebida">Bebida</option>
+        <option value="Otro">Otro</option>
+      </select>
 
-      <button type="submit">Agregar Insumo</button>
+      <label>Fecha de ingreso:</label>
+      <input type="date" name="fecha_ingreso" required>
+
+      <label>Fecha de vencimiento:</label>
+      <input type="date" name="fecha_vencimiento">
+
+      <label>Lote:</label>
+      <input type="text" name="lote" required>
+
+      <label>Descripción:</label>
+      <textarea name="descripcion" rows="3"></textarea>
+
+      <label>Ubicación en almacén:</label>
+      <input type="text" name="ubicacion" required>
+
+      <label>Estado:</label>
+      <select name="estado" required>
+        <option value="Activo">Activo</option>
+        <option value="Agotado">Agotado</option>
+      </select>
+
+      <label>Proveedor:</label>
+      <input type="text" name="proveedor" required>
+
+      <label>Foto del ingrediente:</label>
+      <input type="file" name="foto" accept="image/*">
+
+      <button type="submit">Registrar Ingrediente</button>
     </form>
   </div>
 </body>

@@ -7,7 +7,7 @@ class AlmacenCrud {
 
     public function __construct() {
         $this->conexion = Conexion::obtenerConexion();
-        $this->root = dirname(dirname(__DIR__)); // Ej: C:\xampp\htdocs\ProyectoAula
+        $this->root = dirname(dirname(__DIR__)); 
     }
 
     // Método para agregar un producto al almacén
