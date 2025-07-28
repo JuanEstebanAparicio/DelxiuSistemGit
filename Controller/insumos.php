@@ -1,68 +1,49 @@
 <?php
-session_start();
-
 $baseDir = dirname(dirname(__DIR__));
 require_once($baseDir . '/Model/Entity/productos.php');
 require_once($baseDir . '/Model/Crud/almacen_crud.php');
 
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Obtener datos del formulario
-        $nombre = $_POST['nombre'] ?? '';
-        $cantidad = $_POST['cantidad'] ?? 0;
-        $cantidad_minima = $_POST['cantidad_minima'] ?? 0;
-        $unidad = $_POST['unidad'] ?? '';
-        $costo_unitario = $_POST['costo_unitario'] ?? 0;
-        $categoria = $_POST['categoria'] ?? '';
-        $fecha_ingreso = $_POST['fecha_ingreso'] ?? '';
-        $fecha_vencimiento = $_POST['fecha_vencimiento'] ?? null;
-        $lote = $_POST['lote'] ?? '';
-        $descripcion = $_POST['descripcion'] ?? '';
-        $ubicacion = $_POST['ubicacion'] ?? '';
-        $estado = $_POST['estado'] ?? '';
-        $proveedor = $_POST['proveedor'] ?? '';
+// Validar si se enviaron datos POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        // Procesar imagen
-        $fotoNombre = null;
-        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-            $fotoTmp = $_FILES['foto']['tmp_name'];
-            $fotoNombre = basename($_FILES['foto']['name']);
-            $rutaDestino = $baseDir . '/Media/' . $fotoNombre;
-            move_uploaded_file($fotoTmp, $rutaDestino);
+    $fotoNombre = null;
+    if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == 0) {
+        $fotoNombre = uniqid() . "_" . $_FILES["foto"]["name"];
+        $rutaDestino = $baseDir . '/Media/' . $fotoNombre;
+
+        if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $rutaDestino)) {
+            die("Error al subir la imagen.");
         }
+    }
 
-        // Crear objeto Ingrediente
-        $insumo = new Ingrediente(
-            $nombre,
-            $cantidad,
-            $cantidad_minima,
-            $unidad,
-            $costo_unitario,
-            $categoria,
-            $fecha_ingreso,
-            $fecha_vencimiento,
-            $lote,
-            $descripcion,
-            $ubicacion,
-            $estado,
-            $proveedor,
-            $fotoNombre
-        );
+    // Crear objeto Ingrediente
+    $insumo = new Ingrediente(
+        $_POST['nombre'],
+        $_POST['cantidad'],
+        $_POST['cantidad_minima'],
+        $_POST['unidad'],
+        $_POST['costo_unitario'],
+        $_POST['categoria'],
+        $_POST['fecha_ingreso'],
+        $_POST['fecha_vencimiento'],
+        $_POST['lote'],
+        $_POST['descripcion'],
+        $_POST['ubicacion'],
+        $_POST['estado'],
+        $_POST['proveedor'],
+        $fotoNombre
+    );
 
-        // Llamar a la función de AlmacenCrud
+    // Llamar al CRUD para registrar el insumo
+    try {
         $crud = new Insumo_crud();
         $crud->crearInsumo($insumo);
-
-        $_SESSION['mensaje_exito'] = "Insumo registrado correctamente.";
-        header("Location: ../View/gestor_ingredientes.php");
+        header("Location: ../View/gestor_ingredientes.php?success=1");
         exit();
-    } else {
-        throw new Exception("Método de solicitud no válido.");
+    } catch (Exception $e) {
+        die("Error: " . $e->getMessage());
     }
-} catch (Exception $e) {
-    error_log("❌ Error al registrar insumo: " . $e->getMessage());
-    $_SESSION['mensaje_error'] = "Error al registrar el insumo.";
-    header("Location: ../View/gestor_ingredientes.php");
-    exit();
+} else {
+    die("Acceso no autorizado.");
 }
 ?>

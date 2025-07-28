@@ -17,7 +17,7 @@ if (isset($_SESSION['usuario'])) {
 <body>
   <div class="content">
     <h2>Registrar Ingrediente</h2>
-    <form action="insertar_ingrediente.php" method="POST" enctype="multipart/form-data">
+    <form action="../Controller/insumos.php" method="POST" enctype="multipart/form-data">
       <label>Nombre del ingrediente:</label>
       <input type="text" name="nombre" placeholder="Ej: Tomate" required>
 
