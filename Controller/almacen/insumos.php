@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $crud = new Insumo_crud();
         $crud->crearInsumo($insumo);
-        header("Location: ../View/gestor_ingredientes.php?success=1");
+        header("Location: " . BASE_URL . "/View/gestor_ingredientes.php");
         exit();
     } catch (Exception $e) {
         die("Error: " . $e->getMessage());

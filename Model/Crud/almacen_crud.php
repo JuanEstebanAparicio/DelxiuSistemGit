@@ -46,23 +46,24 @@ class Insumo_crud {
         $proveedor = $insumo->getProveedor();
         $foto = $insumo->getFoto();
 
-        $stmt->bind_param(
-            "dddsssssssssss",
-            $nombre,
-            $cantidad,
-            $cantidad_minima,
-            $unidad,
-            $costo_unitario,
-            $categoria,
-            $fecha_ingreso,
-            $fecha_vencimiento,
-            $lote,
-            $descripcion,
-            $ubicacion,
-            $estado,
-            $proveedor,
-            $foto
-        );
+       $stmt->bind_param(
+    "iidsssssssssss",
+    $cantidad,
+    $cantidad_minima,
+    $costo_unitario,
+    $nombre,
+    $unidad,
+    $categoria,
+    $fecha_ingreso,
+    $fecha_vencimiento,
+    $lote,
+    $descripcion,
+    $ubicacion,
+    $estado,
+    $proveedor,
+    $foto
+);
+
 
         if (!$stmt->execute()) {
             error_log("❌ Error al ejecutar inserción de insumo: " . $stmt->error);
