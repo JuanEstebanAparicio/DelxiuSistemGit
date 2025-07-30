@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db   = 'bd_delix';
 $user = 'root';
-$pass = '';
+$pass = 'root';
 $charset = 'utf8mb4';
 $port = 3306;
 
