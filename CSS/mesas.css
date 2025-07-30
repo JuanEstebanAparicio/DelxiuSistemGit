@@ -120,3 +120,14 @@ h2 {
 #carrito.activo {
   display: block;
 }
+
+#carrito a.btn-ver-pedido {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  background-color: #1976d2;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+}
