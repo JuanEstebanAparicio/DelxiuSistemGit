@@ -3,11 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Mesa 2</title>
-  <link rel="stylesheet" href="../CSS/mesa.css">
+  <link rel="stylesheet" href="../CSS/mesas.css">
 </head>
 <body>
-  <h1>Bienvenido a la Mesa 2</h1>
-  <p>Contenido exclusivo de esta mesa.</p>
-  <a href="../index.html">Volver al inicio</a>
+  <header>
+    <h1>Mesa 2</h1>
+    <div id="carrito-icono" onclick="toggleCarrito()">
+      🛒 <span id="contador-carrito">0</span>
+    </div>
+  </header>
+
+  <main>
+    <h2>Menú del Restaurante</h2>
+    <div class="menu">
+      <div class="producto">
+        <h3>Pizza Margarita</h3>
+        <p>$15.000</p>
+        <div class="contador">
+          <button onclick="cambiarCantidad(this, -1)">-</button>
+          <span class="cantidad">0</span>
+          <button onclick="cambiarCantidad(this, 1)">+</button>
+        </div>
+        <button class="btn-comprar" onclick="agregarAlCarrito(this)">Comprar</button>
+      </div>
+
+      <div class="producto">
+        <h3>Hamburguesa Clásica</h3>
+        <p>$12.000</p>
+        <div class="contador">
+          <button onclick="cambiarCantidad(this, -1)">-</button>
+          <span class="cantidad">0</span>
+          <button onclick="cambiarCantidad(this, 1)">+</button>
+        </div>
+        <button class="btn-comprar" onclick="agregarAlCarrito(this)">Comprar</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="carrito">
+    <h2>Carrito</h2>
+    <ul id="lista-carrito"></ul>
+    <button onclick="realizarOrden()">Realizar Orden</button>
+  </div>
+
+  <script src="../JS/mesa.js"></script>
 </body>
 </html>
