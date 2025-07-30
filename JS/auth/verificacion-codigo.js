@@ -52,7 +52,7 @@ async function verificarCodigo() {
   formData.append('correo', correo);
   formData.append('codigo', codigo);
 
-  const response = await fetch('../Controller/VerificacionController.php', {
+  const response = await fetch('../Controller/Login/VerificacionController.php', {
     method: 'POST',
     body: formData
   });

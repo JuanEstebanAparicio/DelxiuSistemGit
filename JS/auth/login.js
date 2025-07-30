@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const response = await fetch('../Controller/LoginController.php', {
+      const response = await fetch('../Controller/Login/LoginController.php', {
         method: 'POST',
         body: formData
       });

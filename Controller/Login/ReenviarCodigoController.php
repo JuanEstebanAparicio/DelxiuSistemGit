@@ -1,6 +1,6 @@
 <?php
-require_once '../Controller/UsuarioTemp.php';
-require_once '../Controller/Correo.php';
+require_once '../Model/Entity/UsuarioTemp.php';
+require_once '../Controller/Login/Correo.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo = $_POST['correo'] ?? '';

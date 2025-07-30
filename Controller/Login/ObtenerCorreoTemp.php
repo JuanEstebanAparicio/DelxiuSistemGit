@@ -1,5 +1,6 @@
 <?php
-require_once '../Controller/conexion.php';
+require_once(__DIR__ . '/../../Model/Entity/conexion.php');
+
 
 header('Content-Type: application/json');
 

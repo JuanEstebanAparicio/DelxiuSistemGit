@@ -1,6 +1,7 @@
 <?php
 // reset-password.php
-require_once __DIR__ . '/conexion.php';
+require_once(__DIR__ . '/../../Model/Entity/conexion.php');
+
 
 $token = $_GET['token'] ?? '';
 $error = '';
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
     .volver-btn { display: inline-block; margin-top: 20px; text-align: center; background: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
   </style>
   <?php if ($ok): ?>
-    <meta http-equiv="refresh" content="5;url=../View/inicio_de_pag.php">
+   <meta http-equiv="refresh" content="5;url=/Proyecto%20de%20aula/View/inicio_de_pag.php">
   <?php endif; ?>
 </head>
 <body>
@@ -65,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['clav
     </form>
   <?php else: ?>
     <p class="error">Token inválido o faltante.</p>
-    <a href="../View/inicio_de_pag.php" class="volver-btn">Volver al inicio</a>
+ <a href="/Proyecto%20de%20aula/View/inicio_de_pag.php" class="volver-btn">Volver al inicio</a>
+
   <?php endif; ?>
 </div>
 </body>

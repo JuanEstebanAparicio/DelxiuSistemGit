@@ -4,8 +4,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-require_once '../Controller/UsuarioTemp.php';
-require_once '../Controller/Correo.php';
+require_once(__DIR__ . '/../../Model/Entity/UsuarioTemp.php');
+require_once(__DIR__ . '/Correo.php');
+
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

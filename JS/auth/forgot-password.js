@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const correo = correoInput.value;
 
     try {
-      const res = await fetch('../Controller/RecuperarPasswordController.php', {
+      const res = await fetch('../Controller/Login/RecuperarPasswordController.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ correo })

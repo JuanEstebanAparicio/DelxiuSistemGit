@@ -1,8 +1,8 @@
 <?php
-require_once '../Controller/UsuarioTemp.php';
-require_once '../Model/Entity/Usuario.php';
+require_once(__DIR__ . '/../../Model/Entity/UsuarioTemp.php');
+require_once(__DIR__ . '/../../Model/Entity/Usuario.php');
 
-header('Content-Type: application/json');
+header('Content-Type: application/json');  
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

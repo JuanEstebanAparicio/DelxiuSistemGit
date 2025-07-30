@@ -13,6 +13,6 @@ if (isset($_COOKIE['remember_token'])) {
 }
 
 // Redirige al inicio (o login)
-header('Location: ../View/inicio_de_pag.php');
+header('Location: /Proyecto%20de%20aula/View/inicio_de_pag.php');
 exit;
 

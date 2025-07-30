@@ -1,6 +1,6 @@
 <?php
 // Controller/RecuperarPasswordController.php
-require_once 'conexion.php';
+require_once(__DIR__ . '/../../Model/Entity/conexion.php');
 require_once 'Correo.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['correo'])) {
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['correo'])) {
 
     $usuario_id = $usuario['usuario_id'];
     $token = bin2hex(random_bytes(32));
-    $enlace = "http://localhost/Proyecto%20de%20aula/Controller/reset-password.php?token=$token";
+    $enlace = "http://localhost/Proyecto%20de%20aula/Controller/Login/reset-password.php?token=$token";
 
     $update = $pdo->prepare("UPDATE usuarios SET recuperar_token = ? WHERE usuario_id = ?");
     $update->execute([$token, $usuario_id]);

@@ -13,7 +13,8 @@
   <header>
     <h1>Bienvenido al Panel de Control</h1>
     <p>Hola, <?php echo htmlspecialchars($_SESSION['usuario']['nombre']); ?>!</p>
-    <a href="../Controller/LogoutController.php">Cerrar sesión</a>
+    <a href="/Proyecto%20de%20aula/Controller/Login/LogoutController.php">Cerrar sesión</a>
+
   </header>
 
   <main>

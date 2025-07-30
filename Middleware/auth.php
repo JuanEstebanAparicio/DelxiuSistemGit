@@ -5,7 +5,7 @@ session_start();
 
 if (!isset($_SESSION['usuario'])) {
     if (isset($_COOKIE['remember_token'])) {
-        require_once __DIR__ . '/../conexion.php';
+        require_once __DIR__ . '/../Model/Entity/conexion.php';
 
         $token = $_COOKIE['remember_token'];
         $stmt = $pdo->prepare("SELECT usuario_id, usuario_nombre, usuario_rol FROM usuarios WHERE usuario_token = ? AND usuario_estado = 'activo'");

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../Controller/conexion.php';
+require_once(__DIR__ . '/conexion.php');
+
 
 class Usuario {
     public function crearDesdeTemporal($temp) {

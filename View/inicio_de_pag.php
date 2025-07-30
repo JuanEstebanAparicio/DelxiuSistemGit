@@ -162,7 +162,7 @@
 
   const observer = new MutationObserver(() => {
     if (!modalCodigo.classList.contains('hidden')) {
-      fetch('../Controller/ObtenerCorreoTemp.php')
+      fetch('../Controller/Login/ObtenerCorreoTemp.php')
         .then(res => res.json())
         .then(data => {
           if (data.status === 'ok') {

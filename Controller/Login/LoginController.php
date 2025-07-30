@@ -2,8 +2,8 @@
 // archivo: Controller/LoginController.php
 
 session_start();
-require_once __DIR__ . '/../Model/Entity/Usuario.php';
-require_once __DIR__ . '/conexion.php';
+require_once(__DIR__ . '/../../Model/Entity/Usuario.php');
+require_once(__DIR__ . '/../../Model/Entity/conexion.php');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

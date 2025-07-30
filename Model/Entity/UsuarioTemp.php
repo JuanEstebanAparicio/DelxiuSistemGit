@@ -1,6 +1,7 @@
 <?php
 // archivo: models/UsuarioTemp.php
-require_once '../Controller/conexion.php';
+require_once(__DIR__ . '/conexion.php');
+
 
 class UsuarioTemp {
     public function insertar($nombre, $correo, $restaurante, $clave, $codigo) {
@@ -35,7 +36,8 @@ class UsuarioTemp {
 }
 
 // archivo: models/Usuario.php
-require_once '../Controller/conexion.php';
+require_once(__DIR__ . '/conexion.php');
+
 
 class UsuarioController {
     public function crearDesdeTemporal($temp) {
