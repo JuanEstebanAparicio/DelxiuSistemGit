@@ -1,48 +1,22 @@
-<?php 
-if (!defined('BASE_URL')) {
-    define('BASE_URL', 'http://localhost/ProyectoAula-semestre6');
+<?php
+$host = 'localhost';
+$db   = 'bd_delix';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+$port = 3306;
+
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+
+$options = [
+  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+  PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+  $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+  exit('Error de conexión: ' . $e->getMessage());
 }
 
-if (!class_exists('Conexion')) {
-    class Conexion {
-        private static $instancia = null;
-        private $conexion;
-        
-        private function __construct() {
-            $host = "localhost"; 
-            $user = "root"; 
-            $password = ""; 
-            $database = "bd_delix";
-            
-            $this->conexion = mysqli_connect($host, $user, $password, $database);
-            
-            if (!$this->conexion) {
-                throw new Exception(
-                    "Error de conexión MySQL: " . mysqli_connect_errno() . " - " . mysqli_connect_error()
-                );
-            }
-            
-            mysqli_set_charset($this->conexion, 'utf8mb4');
-        }
-
-        // Método para obtener la instancia de la conexión
-        public static function obtenerConexion() {
-            if (self::$instancia === null) {
-                try {
-                    self::$instancia = new self();
-                } catch (Exception $e) {
-                    error_log("Error de conexión: " . $e->getMessage());
-                    die("Lo sentimos, ocurrió un error al conectar con el sistema. Intenta nuevamente más tarde.");
-                }
-            }
-            return self::$instancia->conexion;
-        }
-
-        // Evitamos la clonación del objeto
-        public function __clone() {}
-
-        // Evitamos la deserialización del objeto
-        public function __wakeup() {}
-    }
-}
-?>
