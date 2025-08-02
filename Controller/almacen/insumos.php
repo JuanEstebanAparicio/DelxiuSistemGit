@@ -3,6 +3,26 @@ $baseDir = dirname(dirname(__DIR__));
 require_once($baseDir . '/Model/Entity/productos.php');
 require_once($baseDir . '/Model/Crud/almacen_crud.php');
 
+// Conexión PDO
+$host = 'localhost';
+$db   = 'bd_delix';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
+}
+
 // Validar si se enviaron datos POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -16,8 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Crear objeto Ingrediente
-    $insumo = new Ingrediente(
+    // Crear objeto productos (minúscula)
+    $insumo = new productos(
         $_POST['nombre'],
         $_POST['cantidad'],
         $_POST['cantidad_minima'],
@@ -36,12 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Llamar al CRUD para registrar el insumo
     try {
-        $crud = new Insumo_crud();
+        $crud = new Insumo_crud($pdo);
         $crud->crearInsumo($insumo);
-        header("Location: " . BASE_URL . "/View/gestor_ingredientes.php");
+        header("Location: http://localhost/ProyectoAula-semestre6/View/gestor_ingredientes.php?success=1");
         exit();
     } catch (Exception $e) {
-        die("Error: " . $e->getMessage());
+        die("Error al registrar: " . $e->getMessage());
     }
 } else {
     die("Acceso no autorizado.");

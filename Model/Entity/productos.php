@@ -1,8 +1,6 @@
 <?php
-$baseDir = dirname(dirname(__DIR__));
-require_once($baseDir . '../Model/entity/Conexion.php');
 
-class Ingrediente {
+class productos {
     private $nombre;
     private $cantidad;
     private $cantidad_minima;
@@ -17,7 +15,6 @@ class Ingrediente {
     private $estado;
     private $proveedor;
     private $foto;
-    private $conexion;
 
     public function __construct($nombre, $cantidad, $cantidad_minima, $unidad, $costo_unitario, $categoria, $fecha_ingreso, $fecha_vencimiento, $lote, $descripcion, $ubicacion, $estado, $proveedor, $foto) {
         $this->nombre = $nombre;
@@ -34,12 +31,6 @@ class Ingrediente {
         $this->estado = $estado;
         $this->proveedor = $proveedor;
         $this->foto = $foto;
-
-        try {
-            $this->conexion = Conexion::obtenerConexion();
-        } catch (Exception $e) {
-            throw new Exception("Error al conectar con la base de datos: " . $e->getMessage());
-        }
     }
 
     // Getters
@@ -74,5 +65,5 @@ class Ingrediente {
     public function setProveedor($proveedor) { $this->proveedor = $proveedor; }
     public function setFoto($foto) { $this->foto = $foto; }
 }
-?>
 
+?>
