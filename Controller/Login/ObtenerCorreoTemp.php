@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../../Model/Entity/conexion.php');
+require_once(__DIR__ . '/../../Model/Crud/UsuarioTemp_crud.php');
 
 
 header('Content-Type: application/json');

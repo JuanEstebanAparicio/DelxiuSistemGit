@@ -1,5 +1,5 @@
 <?php
-require_once '../Model/Entity/UsuarioTemp.php';
+require_once '../Model/Crud/UsuarioTemp_crud.php';
 require_once '../Controller/Login/Correo.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $usuarioTemp = new UsuarioTemp();
+    $usuarioTemp = new UsuarioTemp_crud();
     $datos = $usuarioTemp->reenviarCodigoExistente($correo);
 
     if (!$datos) {
