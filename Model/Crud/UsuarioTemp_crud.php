@@ -11,14 +11,12 @@ class UsuarioTempCrud {
     }
 
     public function insertar(UsuarioTemp $temp): bool {
-        // Verificar si ya existe
         $sql = "SELECT 1 FROM usuarios WHERE usuario_correo = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$temp->getCorreo()]);
 
         if ($stmt->fetch()) return false;
 
-        // Insertar en usuarios_temp
         $sql = "INSERT INTO usuarios_temp (nombre, correo, nombre_restaurante, clave, codigo, creado_en)
                 VALUES (?, ?, ?, ?, ?, NOW())
                 ON DUPLICATE KEY UPDATE codigo = VALUES(codigo), creado_en = NOW()";
