@@ -58,12 +58,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $crud = new Insumo_crud($pdo);
         $crud->crearInsumo($insumo);
-        header("Location: http://localhost/ProyectoAula-semestre6/View/gestor_ingredientes.php?success=1");
+        header("Location: http://localhost/Proyecto_de_aula/View/gestor_ingredientes.php?success=1");
         exit();
     } catch (Exception $e) {
         die("Error al registrar: " . $e->getMessage());
     }
 } else {
-    die("Acceso no autorizado.");
+    http_response_code(403);
+    echo "Este recurso solo acepta solicitudes POST.";
 }
 ?>
