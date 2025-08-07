@@ -2,8 +2,8 @@
 // archivo: Controller/LoginController.php
 
 session_start();
-require_once(__DIR__ . '/../../Model/Entity/Usuario.php');
-require_once(__DIR__ . '/../../Model/Entity/conexion.php');
+require_once(__DIR__ . '/../../Model/Crud/UsuarioTemp_crud.php');
+require_once(__DIR__ . '/../../Model/Crud/Usuario_crud.php');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clave  = $_POST['clave'] ?? '';
     $recordarme = isset($_POST['recordarme']);
 
-    $usuarioModel = new Usuario();
+    $usuarioModel = new Usuario_crud();
     $usuario = $usuarioModel->buscarPorCorreo($correo);
 
     if ($usuario && password_verify($clave, $usuario['usuario_clave'])) {

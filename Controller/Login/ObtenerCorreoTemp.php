@@ -1,6 +1,5 @@
 <?php
-require_once(__DIR__ . '/../../Model/Entity/conexion.php');
-
+require_once(__DIR__ . '../../Model/Crud/UsuarioTemp_crud.php');
 
 header('Content-Type: application/json');
 
@@ -18,3 +17,4 @@ try {
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'msg' => 'Error en la base de datos']);
 }
+?>

@@ -1,6 +1,6 @@
 <?php
 // archivo: cron/limpiar_temp.php
-require_once '../Model/Entity/conexion.php';
+require_once '../Model/Crud/Usuario_crud.php';
 
 try {
     $sql1 = "DELETE FROM usuarios_temp WHERE creado_en < NOW() - INTERVAL 30 MINUTE";

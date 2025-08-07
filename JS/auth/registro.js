@@ -45,7 +45,7 @@ document.getElementById('btn-crear-cuenta').addEventListener('click', async () =
   formData.append('nombre_restaurante', restaurante);
   formData.append('clave', clave);
 
-  const response = await fetch('../Controller/Login/RegistroController.php', {
+  const response = await fetch('Proyecto%20de%20aula/Controller/Login/RegistroController.php', {
     method: 'POST',
     body: formData
   });

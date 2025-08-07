@@ -1,9 +1,9 @@
 <?php
-require_once '../Model/Entity/Usuario.php';
+require_once '../Model/Crud/Usuario_crud.php';
 
 class UsuarioController {
     public function registrarManual($nombre, $correo, $clave, $restaurante) {
-        $usuario = new Usuario();
+        $usuario = new Usuario_crud();
 
         return $usuario->crearDesdeTemporal([
             'nombre_usuario' => $nombre,

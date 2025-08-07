@@ -1,6 +1,6 @@
 <?php
 // Controller/RecuperarPasswordController.php
-require_once(__DIR__ . '/../../Model/Entity/conexion.php');
+require_once(__DIR__ . '/../../Model/Crud/Usuario_crud.php');
 require_once 'Correo.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['correo'])) {

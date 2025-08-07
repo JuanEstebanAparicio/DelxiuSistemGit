@@ -3,14 +3,15 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+header('Content-Type: application/json'); // 👈 Obligatorio para que JS lo entienda como JSON
 
-require_once(__DIR__ . '/../../Model/Entity/UsuarioTemp.php');
+require_once(__DIR__ . '/../../Model/Crud/UsuarioTemp_crud.php');
 require_once(__DIR__ . '/Correo.php');
-
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    exit('Método no permitido');
+    echo json_encode(['status' => 'error', 'msg' => 'Método no permitido']);
+    exit;
 }
 
 $nombre = $_POST['nombre_usuario'] ?? '';
@@ -27,7 +28,7 @@ if (!$nombre || !$correo || !$restaurante || !$clave) {
 $claveHash = password_hash($clave, PASSWORD_DEFAULT);
 $codigo = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
-$usuarioTemp = new UsuarioTemp();
+$usuarioTemp = new UsuarioTemp_crud();
 
 if ($usuarioTemp->insertar($nombre, $correo, $restaurante, $claveHash, $codigo)) {
     if (Correo::enviar($correo, $codigo)) {

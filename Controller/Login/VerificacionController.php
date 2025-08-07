@@ -1,6 +1,6 @@
 <?php
-require_once(__DIR__ . '/../../Model/Entity/UsuarioTemp.php');
-require_once(__DIR__ . '/../../Model/Entity/Usuario.php');
+require_once(__DIR__ . '/../../Model/Crud/UsuarioTemp_crud.php');
+require_once(__DIR__ . '/../../Model/Crud/Usuario_crud.php');
 
 header('Content-Type: application/json');  
 
@@ -19,7 +19,7 @@ if (!$correo || !$codigo) {
     exit;
 }
 
-$usuarioTemp = new UsuarioTemp();
+$usuarioTemp = new UsuarioTemp_crud();
 $tempData = $usuarioTemp->obtenerPorCorreo($correo);
 
 if (!$tempData || $tempData['codigo'] !== $codigo) {
@@ -27,7 +27,7 @@ if (!$tempData || $tempData['codigo'] !== $codigo) {
     exit;
 }
 
-$usuario = new Usuario();
+$usuario = new Usuario_crud();
 $usuario->crearDesdeTemporal($tempData);
 $usuarioTemp->eliminar($correo);
 

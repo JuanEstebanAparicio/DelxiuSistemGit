@@ -1,57 +1,35 @@
 <?php
-// archivo: models/UsuarioTemp.php
-require_once(__DIR__ . '/conexion.php');
-
-
 class UsuarioTemp {
-    public function insertar($nombre, $correo, $restaurante, $clave, $codigo) {
-        global $pdo;
+    private $nombre;
+    private $correo;
+    private $restaurante;
+    private $clave;
+    private $codigo;
+    private $creado_en;
 
-        $sql = "SELECT 1 FROM usuarios WHERE usuario_correo = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$correo]);
-        if ($stmt->fetch()) return false; // ya existe en usuarios
-
-        $sql = "INSERT INTO usuarios_temp (nombre_usuario, correo, nombre_restaurante, clave, codigo, creado_en)
-                VALUES (?, ?, ?, ?, ?, NOW())
-                ON DUPLICATE KEY UPDATE codigo = VALUES(codigo), creado_en = NOW()";
-        $stmt = $pdo->prepare($sql);
-        return $stmt->execute([$nombre, $correo, $restaurante, $clave, $codigo]);
+    public function __construct($nombre, $correo, $restaurante, $clave, $codigo, $creado_en = null) {
+        $this->nombre = $nombre;
+        $this->correo = $correo;
+        $this->restaurante = $restaurante;
+        $this->clave = $clave;
+        $this->codigo = $codigo;
+        $this->creado_en = $creado_en;
     }
 
-    public function obtenerPorCorreo($correo) {
-        global $pdo;
+    // Getters
+    public function getNombre() { return $this->nombre; }
+    public function getCorreo() { return $this->correo; }
+    public function getRestaurante() { return $this->restaurante; }
+    public function getClave() { return $this->clave; }
+    public function getCodigo() { return $this->codigo; }
+    public function getCreadoEn() { return $this->creado_en; }
 
-        $sql = "SELECT * FROM usuarios_temp WHERE correo = ? AND creado_en >= NOW() - INTERVAL 30 MINUTE";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$correo]);
-        return $stmt->fetch();
-    }
-
-    public function eliminar($correo) {
-        global $pdo;
-        $stmt = $pdo->prepare("DELETE FROM usuarios_temp WHERE correo = ?");
-        return $stmt->execute([$correo]);
-    }
+    // Setters
+    public function setNombre($nombre) { $this->nombre = $nombre; }
+    public function setCorreo($correo) { $this->correo = $correo; }
+    public function setRestaurante($restaurante) { $this->restaurante = $restaurante; }
+    public function setClave($clave) { $this->clave = $clave; }
+    public function setCodigo($codigo) { $this->codigo = $codigo; }
+    public function setCreadoEn($creado_en) { $this->creado_en = $creado_en; }
 }
-
-// archivo: models/Usuario.php
-require_once(__DIR__ . '/conexion.php');
-
-
-class UsuarioController {
-    public function crearDesdeTemporal($temp) {
-        global $pdo;
-
-        $sql = "INSERT INTO usuarios (usuario_nombre, usuario_correo, usuario_clave, usuario_restaurante, usuario_estado, usuario_rol, usuario_creacion)
-                VALUES (?, ?, ?, ?, 'activo', 'usuario', NOW())";
-
-        $stmt = $pdo->prepare($sql);
-        return $stmt->execute([
-            $temp['nombre_usuario'],
-            $temp['correo'],
-            $temp['clave'],
-            $temp['nombre_restaurante']
-        ]);
-    }
-}
+?>
