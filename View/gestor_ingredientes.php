@@ -12,6 +12,7 @@ $resultado = $conexion->query($query);
     <link rel="stylesheet" href="../CSS/insumos.css">
       <link rel="stylesheet" href="../CSS/modales.css">
   <link rel="stylesheet" href="../CSS/registroInsumo.css">
+  <link rel="stylesheet" href="../CSS/tables.css">
     <style>
     .modal-content {
       max-height: 90vh;
@@ -21,17 +22,14 @@ $resultado = $conexion->query($query);
 </head>
 <body>
     
-<div class="content">
-    <h2>Gestor de Insumos</h2>
-    <button onclick="showModal('formModal')" class="modal-btn">+ Registrar Ingrediente</button>
-  </div>
+
 
   <!-- MODAL PARA REGITRAR LOS INSUMOS  -->
   <div id="formModal" class="modal hidden">
     <div class="modal-content">
       <span class="close" onclick="hideModal('formModal')">&times;</span>
       <h2>Registrar Ingrediente</h2>
-      <form action="/Proyecto_de_aula/Controller/almacen/insumos.php" method="POST">
+      <form action="/Proyecto_de_aula/Controller/almacen/insumos.php" method="POST" onsubmit="return validarFechas()">
         <label>Nombre del ingrediente:</label>
         <input type="text" name="nombre" placeholder="Ej: Tomate" required>
 
@@ -62,10 +60,10 @@ $resultado = $conexion->query($query);
         </select>
 
         <label>Fecha de ingreso:</label>
-        <input type="date" name="fecha_ingreso" required>
+        <input type="date" name="fecha_ingreso" id="fecha_ingreso" required readonly>
 
         <label>Fecha de vencimiento:</label>
-        <input type="date" name="fecha_vencimiento">
+        <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" required>
 
         <label>Lote:</label>
         <input type="text" name="lote" required>
@@ -93,20 +91,23 @@ $resultado = $conexion->query($query);
     </div>
   </div>
 <script src="../JS/animations/modales.js"></script>
-  
+<script src="../JS/validar_fechas.js"></script>
 <!-- ==========================================================================  -->
-
-
+  <h2>Gestor de Ingredientes</h2>
+<div class="content">
+    <button onclick="showModal('formModal')" class="modal-btn">+ Registrar Ingrediente</button>
+  </div>
   <!-- TABLA DE INSUMOS   -->
 
 <div class="content">
-        <h2>Gestor de Ingredientes</h2>
+  
 
-        <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
-            <p style="color: green;">✅ Ingrediente registrado correctamente.</p>
-        <?php endif; ?>
+    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+        <p class="success-msg">✅ Ingrediente registrado correctamente.</p>
+    <?php endif; ?>
 
-        <table border="1" cellpadding="10" cellspacing="0">
+    <div class="table-container">
+        <table class="styled-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -119,25 +120,24 @@ $resultado = $conexion->query($query);
             </thead>
             <tbody>
                 <?php while ($row = $resultado->fetch()): ?>
-    <tr>
-        <td><?= $row['id']; ?></td>
-        <td><?= $row['nombre']; ?></td>
-        <td><?= $row['cantidad']; ?></td>
-        <td><?= $row['unidad']; ?></td>
-        <td><?= $row['estado']; ?></td>
-        <td>
-            <a href="editar_ingrediente.php?id=<?= $row['id']; ?>">
-                <button>✏️ Editar</button>
-            </a>
-            <a href="eliminar_ingrediente.php?id=<?= $row['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar este ingrediente?');">
-                <button style="background-color: red; color: white;">🗑️ Eliminar</button>
-            </a>
-        </td>
-    </tr>
-<?php endwhile; ?>
+                    <tr>
+                        <td><?= $row['id']; ?></td>
+                        <td><?= $row['nombre']; ?></td>
+                        <td><?= $row['cantidad']; ?></td>
+                        <td><?= $row['unidad']; ?></td>
+                        <td><?= $row['estado']; ?></td>
+                        <td>
+                            <a href="editar_ingrediente.php?id=<?= $row['id']; ?>" class="btn btn-edit">✏️ Editar</a>
+                            <a href="eliminar_ingrediente.php?id=<?= $row['id']; ?>" 
+                               onclick="return confirm('¿Estás seguro de eliminar este ingrediente?');"
+                               class="btn btn-delete">🗑️ Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
             </tbody>
         </table>
     </div>
+</div>
     <!-- ==========================================================================  -->
 </body>
 </html>
