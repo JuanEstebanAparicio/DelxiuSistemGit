@@ -1,7 +1,7 @@
 <?php
 require_once('../Model/Entity/Conexion.php');
 $conexion = Conexion::obtenerConexion();
-$query = "SELECT * FROM insumos";
+$query = "SELECT *, (cantidad * costo_unitario) AS valor_total FROM insumos";
 $resultado = $conexion->query($query);
 ?>
 <!DOCTYPE html>
@@ -98,10 +98,7 @@ $resultado = $conexion->query($query);
     <button onclick="showModal('formModal')" class="modal-btn">+ Registrar Ingrediente</button>
   </div>
   <!-- TABLA DE INSUMOS   -->
-
 <div class="content">
-  
-
     <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
         <p class="success-msg">✅ Ingrediente registrado correctamente.</p>
     <?php endif; ?>
@@ -110,22 +107,32 @@ $resultado = $conexion->query($query);
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Unidad</th>
                     <th>Estado</th>
+                    <th>Cantidad</th>
+                    <th>Medida</th>
+                    <th>Cantidad Min</th>
+                    <th>Costo Unitario</th>
+                    <th>Valor Total</th>
+                    <th>Proveedor</th>
                     <th>Acciones</th>
+                    
                 </tr>
             </thead>
             <tbody>
                 <?php while ($row = $resultado->fetch()): ?>
                     <tr>
-                        <td><?= $row['id']; ?></td>
+                        
                         <td><?= $row['nombre']; ?></td>
+                        <td><?= $row['estado']; ?></td>
                         <td><?= $row['cantidad']; ?></td>
                         <td><?= $row['unidad']; ?></td>
-                        <td><?= $row['estado']; ?></td>
+                        <td><?= $row['cantidad_minima']; ?></td>
+                        <td><?= $row['costo_unitario']; ?></td>
+                        <td><?= $row['valor_total']; ?></td>
+                        <td><?= $row['proveedor']; ?></td>
+                      
                         <td>
                             <a href="editar_ingrediente.php?id=<?= $row['id']; ?>" class="btn btn-edit">✏️ Editar</a>
                             <a href="eliminar_ingrediente.php?id=<?= $row['id']; ?>" 

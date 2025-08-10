@@ -16,6 +16,7 @@
 .table-container {
     overflow-x: auto;
     margin-top: 20px;
+    max-width: 100%;
 }
 
 /* Tabla principal */
@@ -27,6 +28,7 @@
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
     animation: fadeIn 0.5s ease-in-out;
+    font-size: 14px;
 }
 
 /* Encabezado */
@@ -34,6 +36,7 @@
     background: linear-gradient(135deg, #4a90e2, #357abd);
     color: white;
     text-align: left;
+    padding: 8px 10px; 
 }
 
 /* Celdas */
