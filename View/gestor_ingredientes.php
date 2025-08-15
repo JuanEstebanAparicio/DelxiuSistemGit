@@ -93,8 +93,9 @@ $resultado = $conexion->query($query);
 <script src="../JS/animations/modales.js"></script>
 <script src="../JS/validar_fechas.js"></script>
 <!-- ==========================================================================  -->
-  <h2>Gestor de Ingredientes</h2>
+  
 <div class="content">
+  <h2>Gestor de Ingredientes</h2>
     <button onclick="showModal('formModal')" class="modal-btn">+ Registrar Ingrediente</button>
   </div>
   <!-- TABLA DE INSUMOS   -->

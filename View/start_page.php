@@ -6,7 +6,7 @@
   <title>Restaurante</title>
     <link rel="stylesheet" href="../CSS/Inicio_pag.css" />
     <link rel ="stylesheet" href="../CSS/modales.css" />
-  <link rel="stylesheet" href="../CSS/password-wrapper.css" />
+  <link rel="stylesheet" href="../CSS/hidePassword.css" />
 </head>
 <body>
   <div id="vanta-bg"></div>
@@ -17,7 +17,7 @@
     <p><span id="typed-text">Trae un servicio confiable</span></p>
     <button class="btn" onclick="showModal('modalLogin')">Iniciar Sesion</button>
     <br>
-    <button class="btn2" onclick="showModal('modalRegistro')">Registrarse</button>
+    <button class="btn2" onclick="showModal('modalRegister')">Registrarse</button>
   </div>
 
 
@@ -61,51 +61,54 @@
 </div>
 
 
-<!-- Modal para Registrarse -->
-<div id="modalRegistro" class="modal hidden">
+<!-- Modal for Registration -->
+<div id="modalRegister" class="modal hidden">
   <div class="modal-content">
-    <button class="close" onclick="hideModal('modalRegistro')">&times;</button>
-    <h2>Registrarse</h2>
-    <form id="registroForm">
+    <button class="close" onclick="hideModal('modalRegister')">&times;</button>
+    <h2>Iniciar Sesion</h2>
+    <form id="registerForm" action="../routes/register.php" method="POST">
+
+
       Nombre de usuario
-  <input type="text" name="nombre_usuario" placeholder="Usuario" id="nombre_usuario" required />
-     Correo electrónico
-  <input type="email" name="correo" id="correo" placeholder="Correo" required />
-    Nombre de restaurante
-  <input type="text" id="nombre_restaurante" name="nombre_restaurante" placeholder="Nombre del restaurante" required />
-  Contraseña
-  <div class="password-wrapper">
-  <input type="password" id="clave" name="clave" placeholder="Contraseña" required />
-  <button type="button" class="toggle-pass" onclick="togglePass('clave', this)">
-    <!-- SVG: ojo abierto -->
-    <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
-    </svg>
-  </button>
-</div>
-  Confirmar contraseña
+      <input type="text" name="user_name" id="user_name" placeholder="Username" required />
+
+      Correo
+      <input type="email" name="user_email" id="user_email" placeholder="Email" required />
+
+      Nombre de restaurante
+      <input type="text" name="user_restaurant" id="user_restaurant" placeholder="Restaurant Name" required />
+
+      Clave o Contraseña
+      <!–– Vista HTML ––>
 <div class="password-wrapper">
-  <input type="password" id="confirmar_clave" placeholder="Confirmar Contraseña" required />
-  <button type="button" class="toggle-pass" onclick="togglePass('confirmar_clave', this)">
-    <!-- SVG: ojo abierto -->
-    <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
-    </svg>
+  <input
+    type="password"
+    name ="user_password"
+    class="password-field"
+    placeholder="Clave secreta 🔐"
+    required
+  />
+  <button
+    type="button"
+    class="toggle-password-btn"
+    aria-label="Mostrar u ocultar contraseña"
+  >
+    👁️
   </button>
 </div>
 
-  <p id="errorPass" style="color: red; display: none;">❌ Las contraseñas no coinciden</p>
+      Confirmar Contraseña
+        
+      <input type="password" id="confirm_password" placeholder="Confirm Password" required />
 
-<button id="btn-crear-cuenta" type="button" class="modal-btn">Crear Cuenta</button>
-</form>
+
+      <p id="errorPass" style="color: red; display: none;">❌ Passwords do not match</p>
+
+      <button type="submit" class="modal-btn">Create Account</button>
+
+    </form>
   </div>
-</div>
+
 
 <!-- Modal: Código de verificación -->
 <div id="modalCodigo" class="modal hidden">
@@ -148,14 +151,21 @@
     <div id="recuperarMensaje" style="margin-top: 10px; color: green; display: none;"></div>
   </div>
 </div>
+
+<!-- Modal de alerta genérica -->
+<div id="alertModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-body"></div>
+    <button onclick="hideModal('alertModal')">Cerrar</button>
+  </div>
+</div>
+
   
 <!-- Al final de tu HTML, justo antes del </body> -->
- <script src="../JS/auth/login.js"></script>
-<script src="../JS/auth/registro.js"></script>
-  <script src="../JS/animations/modales.js"></script>
-  <script src="../JS/auth/verificacion-codigo.js"></script>
-  <script src="../JS/auth/forgot-password.js" defer></script>
 
+  <script src="../JS/animations/modales.js"></script>
+
+<script src="../JS/animations/hidePassword.js"></script>
 <script>
   // Cuando se abra el modal de código, consultar y mostrar el correo
   const modalCodigo = document.getElementById('modalCodigo');

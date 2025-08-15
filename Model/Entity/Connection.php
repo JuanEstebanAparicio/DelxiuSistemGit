@@ -1,6 +1,6 @@
 <?php
 class Conexion {
-  public static function obtenerConexion() {
+  public static function getConnection() {
     $host = 'localhost';
     $db   = 'bd_delix';
     $user = 'root';
@@ -23,5 +23,4 @@ class Conexion {
     }
   }
 }
-
 
