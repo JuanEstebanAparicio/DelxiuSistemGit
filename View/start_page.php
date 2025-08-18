@@ -117,7 +117,7 @@
     <p>Introduce el código que enviamos a tu correo:</p>
     <span id="correo_mostrado_span" style="font-weight: bold; color: #009688;"></span>
 
-    <!-- 🔴 ESTO ES LO QUE FALTABA -->
+
     <input type="hidden" id="correo_verificar" />
 
     <div class="code-input-container">

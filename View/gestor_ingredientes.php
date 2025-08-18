@@ -1,6 +1,6 @@
 <?php
-require_once('../Model/Entity/Conexion.php');
-$conexion = Conexion::obtenerConexion();
+require_once('../Model/Entity/Connection.php');
+$conexion = Conexion::getConnection();
 $query = "SELECT *, (cantidad * costo_unitario) AS valor_total FROM insumos";
 $resultado = $conexion->query($query);
 ?>

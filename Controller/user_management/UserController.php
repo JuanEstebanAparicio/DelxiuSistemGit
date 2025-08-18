@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../Middleware/jsonResponse.php';
 require_once __DIR__ . '/../../Model/Crud/UserModel.php';
-require_once __DIR__ . '/../../Model/Crud/send_code.php'; // Aquí tienes EmailService
+require_once __DIR__ . '/../../Model/Crud/send_code.php'; // EmailService
 
 class UserController
 {
@@ -24,6 +24,7 @@ class UserController
 
         $userModel = new UserModel();
 
+        // Validar si el correo ya existe
         if ($userModel->emailExists($email)) {
             return jsonResponse(['error' => 'Este correo ya está registrado'], 409);
         }
@@ -47,9 +48,13 @@ class UserController
             return jsonResponse(['error' => 'No se pudo enviar el correo de verificación.'], 500);
         }
 
+        // Guardar el mismo código en la BD
+        $userModel->saveVerificationCode($userId, $verificationCode);
+
         return jsonResponse([
             'success' => true,
-            'message' => 'Registro exitoso. Revisa tu correo para verificar la cuenta.'
+            'message' => 'Registro exitoso. Revisa tu correo para verificar la cuenta.',
+            'email'   => $email
         ], 200);
     }
 }
