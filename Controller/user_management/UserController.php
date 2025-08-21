@@ -20,53 +20,55 @@ class UserController {
     }
 
     // Registro de usuario
-    // Registro de usuario
-public function registerUser() {
-    header('Content-Type: application/json; charset=utf-8');
+    public function registerUser() {
+        header('Content-Type: application/json; charset=utf-8');
 
-    try {
-        // Datos del formulario
-        $name       = $_POST['user_name']       ?? null;
-        $email      = $_POST['user_email']      ?? null;
-        $restaurant = $_POST['user_restaurant'] ?? null;
-        $password   = $_POST['user_password']   ?? null;
+        try {
+            // Datos del formulario
+            $name       = $_POST['user_name']       ?? null;
+            $email      = $_POST['user_email']      ?? null;
+            $restaurant = $_POST['user_restaurant'] ?? null;
+            $password   = $_POST['user_password']   ?? null;
 
-        if (!$name || !$email || !$restaurant || !$password) {
-            http_response_code(400);
-            echo json_encode(['ok' => false, 'error' => 'Todos los campos son obligatorios']);
-            return;
-        }
+            if (!$name || !$email || !$restaurant || !$password) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Todos los campos son obligatorios']);
+                return;
+            }
 
-        // Crear objeto usuario
-        $user = new User($name, $email, $password, $restaurant);
+            // Crear objeto usuario
+            $user = new User($name, $email, $password, $restaurant);
 
-        // Guardar en BD
-        $userId = $this->userModel->createUser($user);
+            // Guardar en BD
+            $userId = $this->userModel->createUser($user);
 
-        // 🚀 Enviar correo y obtener el código
-        $sentCode = $this->emailService->sendVerificationEmail($email, $name);
+            // 🚀 Enviar correo y obtener el código
+            $sentCode = $this->emailService->sendVerificationEmail($email, $name);
 
-        if (!$sentCode) {
+            if (!$sentCode) {
+                http_response_code(500);
+                echo json_encode(['ok' => false, 'error' => 'No se pudo enviar el correo de verificación']);
+                return;
+            }
+
+            // 🚀 Guardar en DB el mismo código que se envió
+            $this->userModel->saveVerificationCode($userId, $sentCode);
+
+            // ✅ Respuesta exitosa con el correo
+            echo json_encode([
+                'ok'     => true,
+                'message'=> 'Usuario creado, código enviado',
+                'email'  => $email
+            ]);
+        } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['ok' => false, 'error' => 'No se pudo enviar el correo de verificación']);
-            return;
+            echo json_encode([
+                'ok'    => false,
+                'error' => $e->getMessage(),
+                'line'  => $e->getLine()
+            ]);
         }
-
-        // 🚀 Guardar en DB el mismo código que se envió
-        $this->userModel->saveVerificationCode($userId, $sentCode);
-
-        // ✅ Respuesta exitosa
-        echo json_encode(['ok' => true, 'message' => 'Usuario creado, código enviado']);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode([
-            'ok'    => false,
-            'error' => $e->getMessage(),
-            'line'  => $e->getLine()
-        ]);
     }
-}
-
 
     // Verificar código de usuario
     public function verifyUser() {
@@ -93,5 +95,26 @@ public function registerUser() {
             http_response_code(500);
             echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         }
+    }
+}
+
+// 🚀 Router simple
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? null;
+    $controller = new UserController();
+
+    switch ($action) {
+        case 'register':
+            $controller->registerUser();
+            break;
+
+        case 'verify':
+            $controller->verifyUser();
+            break;
+
+        default:
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['ok' => false, 'error' => 'Acción no válida']);
+            break;
     }
 }

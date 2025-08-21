@@ -113,6 +113,7 @@
 <!-- Modal: Código de verificación -->
 <div id="modalCodigo" class="modal hidden">
   <div class="modal-content">
+    <button class="close" onclick="hideModal('modalCodigo')">&times;</button>
     <h3>Verifica tu correo</h3>
     <p>Introduce el código que enviamos a tu correo:</p>
     <span id="correo_mostrado_span" style="font-weight: bold; color: #009688;"></span>
