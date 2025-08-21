@@ -20,52 +20,53 @@ class UserController {
     }
 
     // Registro de usuario
-    public function registerUser() {
-        header('Content-Type: application/json; charset=utf-8');
+    // Registro de usuario
+public function registerUser() {
+    header('Content-Type: application/json; charset=utf-8');
 
-        try {
-            // Datos del formulario
-            $name       = $_POST['user_name']       ?? null;
-            $email      = $_POST['user_email']      ?? null;
-            $restaurant = $_POST['user_restaurant'] ?? null;
-            $password   = $_POST['user_password']   ?? null;
+    try {
+        // Datos del formulario
+        $name       = $_POST['user_name']       ?? null;
+        $email      = $_POST['user_email']      ?? null;
+        $restaurant = $_POST['user_restaurant'] ?? null;
+        $password   = $_POST['user_password']   ?? null;
 
-            if (!$name || !$email || !$restaurant || !$password) {
-                http_response_code(400);
-                echo json_encode(['ok' => false, 'error' => 'Todos los campos son obligatorios']);
-                return;
-            }
-
-            // Crear objeto usuario
-            $user = new User($name, $email, $password, $restaurant);
-
-            // Guardar en BD
-            $userId = $this->userModel->createUser($user);
-
-            // Generar código y guardarlo
-            $codigo = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $this->userModel->saveVerificationCode($userId, $codigo);
-
-            // Enviar correo
-            $sentCode = $this->emailService->sendVerificationEmail($email, $name);
-
-            if (!$sentCode) {
-                http_response_code(500);
-                echo json_encode(['ok' => false, 'error' => 'No se pudo enviar el correo de verificación']);
-                return;
-            }
-
-            // ✅ Respuesta exitosa
-            echo json_encode(['ok' => true, 'message' => 'Usuario creado, código enviado']);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode([
-                'ok'    => false,
-                'error' => $e->getMessage(),
-                'line'  => $e->getLine()
-            ]);
+        if (!$name || !$email || !$restaurant || !$password) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'Todos los campos son obligatorios']);
+            return;
         }
+
+        // Crear objeto usuario
+        $user = new User($name, $email, $password, $restaurant);
+
+        // Guardar en BD
+        $userId = $this->userModel->createUser($user);
+
+        // 🚀 Enviar correo y obtener el código
+        $sentCode = $this->emailService->sendVerificationEmail($email, $name);
+
+        if (!$sentCode) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'No se pudo enviar el correo de verificación']);
+            return;
+        }
+
+        // 🚀 Guardar en DB el mismo código que se envió
+        $this->userModel->saveVerificationCode($userId, $sentCode);
+
+        // ✅ Respuesta exitosa
+        echo json_encode(['ok' => true, 'message' => 'Usuario creado, código enviado']);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'ok'    => false,
+            'error' => $e->getMessage(),
+            'line'  => $e->getLine()
+        ]);
     }
+}
+
 
     // Verificar código de usuario
     public function verifyUser() {
