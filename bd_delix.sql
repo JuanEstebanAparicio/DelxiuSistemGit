@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-07-2025 a las 23:19:59
+-- Tiempo de generación: 21-08-2025 a las 02:03:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -24,28 +24,73 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Estructura de tabla para la tabla `insumos`
 --
 
-CREATE TABLE `usuarios` (
-  `usuario_id` int(11) NOT NULL,
-  `usuario_nombre` varchar(100) NOT NULL,
-  `usuario_correo` varchar(150) NOT NULL,
-  `usuario_clave` varchar(255) NOT NULL,
-  `usuario_restaurante` varchar(100) NOT NULL,
-  `usuario_estado` enum('activo','bloqueado') DEFAULT 'activo',
-  `usuario_rol` enum('admin','usuario') DEFAULT 'usuario',
-  `usuario_token` varchar(255) DEFAULT NULL,
-  `usuario_creacion` datetime DEFAULT current_timestamp(),
-  `recuperar_token` varchar(255) DEFAULT NULL
+CREATE TABLE `insumos` (
+  `id` int(255) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `cantidad` int(255) NOT NULL,
+  `cantidad_minima` int(255) NOT NULL,
+  `unidad` enum('Kg','Litro','Unidad') NOT NULL,
+  `costo_unitario` decimal(65,2) NOT NULL,
+  `categoria` enum('Vegetal','Carne','Bebida','Otro') NOT NULL,
+  `fecha_ingreso` date NOT NULL,
+  `fecha_vencimiento` date DEFAULT NULL,
+  `lote` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `ubicacion` varchar(100) NOT NULL,
+  `estado` enum('Activo','Agotado','vencido') NOT NULL,
+  `proveedor` varchar(255) NOT NULL,
+  `foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Volcado de datos para la tabla `insumos`
 --
 
-INSERT INTO `usuarios` (`usuario_id`, `usuario_nombre`, `usuario_correo`, `usuario_clave`, `usuario_restaurante`, `usuario_estado`, `usuario_rol`, `usuario_token`, `usuario_creacion`, `recuperar_token`) VALUES
-(42, 'Juan', 'apariciojuanesteban@gmail.com', '$2y$10$kQsBWc9MpL3o6DELuE7oPe8zLEqliUTpLm0pNdwUQd8AZd4NBif3q', 'la rica braza', 'activo', 'usuario', '4bb17055e8a7ecba3f3f5f5603c6916b74e87bfc3464a659535ece64adb27c33', '2025-07-28 12:32:05', NULL);
+INSERT INTO `insumos` (`id`, `nombre`, `cantidad`, `cantidad_minima`, `unidad`, `costo_unitario`, `categoria`, `fecha_ingreso`, `fecha_vencimiento`, `lote`, `descripcion`, `ubicacion`, `estado`, `proveedor`, `foto`) VALUES
+(1, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '6888108722bd7_modelo med parqueadero.png'),
+(2, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '68881152a3061_modelo med parqueadero.png'),
+(3, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '6888117bb045f_modelo med parqueadero.png'),
+(4, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '68881278df52a_modelo med parqueadero.png'),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d8e192e3e_descarga.jpg'),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d91e33695_descarga.jpg'),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d92661d24_descarga.jpg'),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894da65af3bc_descarga.jpg'),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894daedb40cf_descarga.jpg'),
+(0, 'Queseso', 323, 2, 'Kg', 23.00, 'Vegetal', '2025-08-13', '2025-08-14', 'QA_R100', 'juasaas', 'porno', 'Activo', 'ZENU', '6894e148134d1_descarga.jpg'),
+(0, 'Queseso', 323, 2, 'Kg', 23.00, 'Vegetal', '2025-08-13', '2025-08-14', 'QA_R100', 'juasaas', 'porno', 'Activo', 'ZENU', '6894e1b1eaea3_descarga.jpg'),
+(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', '6894e3b115a80_descarga.jpg'),
+(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', NULL),
+(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', NULL),
+(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-20', '2025-08-27', 'QA_R100', 'wqqeqqweweqeqe', 'porno', 'Activo', 'FAVI PAN', NULL),
+(0, 'Chocolate', 12, 12, 'Unidad', 12.00, 'Bebida', '2025-08-13', '2025-08-15', 'LOTE-BLOQ-33', 'werewrwrewr', 'porno', 'Activo', 'FAVI PAN', NULL),
+(0, 'Queseso', 23, 1, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-14', 'QP-001', '121sddewewqeqqe', 'porno', 'Activo', 'FAVI PAN', NULL),
+(0, 'Carne en bistec', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-21', '2025-08-29', '12', '1WQEQEQEQ', 'porno', 'Activo', 'fruco', NULL),
+(0, 'Lechuguita', 34, 12, 'Kg', 12000.00, 'Vegetal', '2025-08-10', '2025-08-13', 'LOTE-BLOQ-33', 'lengua de res ', 'almacen 1', 'Activo', 'Carniceria del norte ', NULL),
+(0, 'Lechuguita', 54, 12, 'Kg', 3000.00, 'Vegetal', '2025-08-12', '2025-08-20', 'QA_R100', 'TOMATE', 'almacen 1', 'Activo', 'FAVI PAN', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `user_name` varchar(100) NOT NULL,
+  `user_email` varchar(150) NOT NULL,
+  `user_password` varchar(255) NOT NULL,
+  `user_restaurant` varchar(100) NOT NULL,
+  `user_status` enum('active','blocked','pending') DEFAULT 'pending',
+  `user_role` enum('admin','user') DEFAULT 'user',
+  `verification_token` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `reset_token` varchar(255) DEFAULT NULL,
+  `verification_code` varchar(6) DEFAULT NULL,
+  `code_expires_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -68,11 +113,11 @@ CREATE TABLE `usuarios_temp` (
 --
 
 --
--- Indices de la tabla `usuarios`
+-- Indices de la tabla `users`
 --
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`usuario_id`),
-  ADD UNIQUE KEY `usuario_correo_unique` (`usuario_correo`);
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `user_email` (`user_email`);
 
 --
 -- Indices de la tabla `usuarios_temp`
@@ -86,16 +131,16 @@ ALTER TABLE `usuarios_temp`
 --
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- AUTO_INCREMENT de la tabla `users`
 --
-ALTER TABLE `usuarios`
-  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_temp`
 --
 ALTER TABLE `usuarios_temp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 DELIMITER $$
 --
