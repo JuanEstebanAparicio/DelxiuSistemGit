@@ -1,5 +1,5 @@
 <?php
-class Conexion {
+class Connection {
   public static function getConnection() {
     $host = 'localhost';
     $db   = 'bd_delix';
@@ -23,4 +23,3 @@ class Conexion {
     }
   }
 }
-

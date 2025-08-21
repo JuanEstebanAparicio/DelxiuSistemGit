@@ -1,60 +1,96 @@
 <?php
-require_once __DIR__ . '/../../Middleware/jsonResponse.php';
+require_once __DIR__ . '/../../Model/Entity/Connection.php';
+require_once __DIR__ . '/../../Model/Entity/User.php';
 require_once __DIR__ . '/../../Model/Crud/UserModel.php';
-require_once __DIR__ . '/../../Model/Crud/send_code.php'; // EmailService
+require_once __DIR__ . '/../../Model/Crud/send_code.php';
 
-class UserController
-{
-    public function registerUser()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return jsonResponse(['error' => 'Método no permitido'], 405);
-        }
+class UserController {
+    private $db;
+    private $userModel;
+    private $emailService;
 
-        // Recogemos los datos con los mismos nombres que en el form
-        $name       = trim($_POST['user_name'] ?? '');
-        $email      = trim($_POST['user_email'] ?? '');
-        $restaurant = trim($_POST['user_restaurant'] ?? '');
-        $password   = trim($_POST['user_password'] ?? '');
+    public function __construct() {
+        // Conexión a BD
+        $this->db = Connection::getConnection();
+        $this->userModel = new UserModel($this->db);
 
-        // Validar que nada esté vacío
-        if (empty($name) || empty($email) || empty($restaurant) || empty($password)) {
-            return jsonResponse(['error' => 'Todos los campos son obligatorios'], 400);
-        }
-
-        $userModel = new UserModel();
-
-        // Validar si el correo ya existe
-        if ($userModel->emailExists($email)) {
-            return jsonResponse(['error' => 'Este correo ya está registrado'], 409);
-        }
-
-        // Hashear la contraseña
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Insertar usuario
-        $userId = $userModel->createUser($name, $email, $hashedPassword, $restaurant);
-
-        if (!$userId) {
-            return jsonResponse(['error' => 'Ocurrió un error al registrar. Inténtalo más tarde.'], 500);
-        }
-
-        // Cargar config y enviar email de verificación
+        // Configuración del correo
         $config = require __DIR__ . '/../../routes/config.php';
-        $emailService = new EmailService($config);
-        $verificationCode = $emailService->sendVerificationEmail($email, $name);
+        $this->emailService = new EmailService($config);
+    }
 
-        if (!$verificationCode) {
-            return jsonResponse(['error' => 'No se pudo enviar el correo de verificación.'], 500);
+    // Registro de usuario
+    public function registerUser() {
+        header('Content-Type: application/json; charset=utf-8');
+
+        try {
+            // Datos del formulario
+            $name       = $_POST['user_name']       ?? null;
+            $email      = $_POST['user_email']      ?? null;
+            $restaurant = $_POST['user_restaurant'] ?? null;
+            $password   = $_POST['user_password']   ?? null;
+
+            if (!$name || !$email || !$restaurant || !$password) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Todos los campos son obligatorios']);
+                return;
+            }
+
+            // Crear objeto usuario
+            $user = new User($name, $email, $password, $restaurant);
+
+            // Guardar en BD
+            $userId = $this->userModel->createUser($user);
+
+            // Generar código y guardarlo
+            $codigo = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $this->userModel->saveVerificationCode($userId, $codigo);
+
+            // Enviar correo
+            $sentCode = $this->emailService->sendVerificationEmail($email, $name);
+
+            if (!$sentCode) {
+                http_response_code(500);
+                echo json_encode(['ok' => false, 'error' => 'No se pudo enviar el correo de verificación']);
+                return;
+            }
+
+            // ✅ Respuesta exitosa
+            echo json_encode(['ok' => true, 'message' => 'Usuario creado, código enviado']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'ok'    => false,
+                'error' => $e->getMessage(),
+                'line'  => $e->getLine()
+            ]);
         }
+    }
 
-        // Guardar el mismo código en la BD
-        $userModel->saveVerificationCode($userId, $verificationCode);
+    // Verificar código de usuario
+    public function verifyUser() {
+        header('Content-Type: application/json; charset=utf-8');
 
-        return jsonResponse([
-            'success' => true,
-            'message' => 'Registro exitoso. Revisa tu correo para verificar la cuenta.',
-            'email'   => $email
-        ], 200);
+        try {
+            $email = $_POST['user_email'] ?? null;
+            $code  = $_POST['verification_code'] ?? null;
+
+            if (!$email || !$code) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Correo y código son obligatorios']);
+                return;
+            }
+
+            if ($this->userModel->verifyCode($email, $code)) {
+                $this->userModel->activateUser($email);
+                echo json_encode(['ok' => true, 'message' => 'Usuario activado con éxito']);
+            } else {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Código inválido o expirado']);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        }
     }
 }

@@ -66,7 +66,7 @@
   <div class="modal-content">
     <button class="close" onclick="hideModal('modalRegister')">&times;</button>
     <h2>Iniciar Sesion</h2>
-    <form id="registerForm" action="../routes/register.php" method="POST">
+    <form id="registerForm" method="POST">
 
 
       Nombre de usuario
@@ -163,38 +163,10 @@
   
 <!-- Al final de tu HTML, justo antes del </body> -->
 
-  <script src="../JS/animations/modales.js"></script>
 
 <script src="../JS/animations/hidePassword.js"></script>
-<script>
-  // Cuando se abra el modal de código, consultar y mostrar el correo
-  const modalCodigo = document.getElementById('modalCodigo');
-
-  const observer = new MutationObserver(() => {
-    if (!modalCodigo.classList.contains('hidden')) {
-      fetch('../Controller/Login/ObtenerCorreoTemp.php')
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            document.getElementById('correo_mostrado_span').textContent = data.correo;
-          }
-        });
-    }
-  });
-
-  observer.observe(modalCodigo, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
-</script>
-
-<script>
-  function volverARegistro() {
-    hideModal('modalCodigo');
-    showModal('modalRegistro');
-  }
-</script>
-
+<script src="../JS/animations/modales.js"></script>
+<script src="../JS/auth/register.js"></script>
 
 </body>
 </html>

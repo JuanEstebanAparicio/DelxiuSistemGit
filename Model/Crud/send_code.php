@@ -77,15 +77,12 @@ class EmailService
             return $codigo;
 
         } catch (Exception $e) {
-            header('Content-Type: application/json; charset=utf-8');
+            
             $info = $mail->ErrorInfo ?: $e->getMessage();
-            echo json_encode([
-                'ok'       => false,
-                'error'    => 'No se pudo enviar el correo de verificación.',
-                'detalles' => $info
-            ], JSON_UNESCAPED_UNICODE);
             error_log("Error al enviar correo: " . $info);
-            exit;
+            
+            return null;
+            
         }
     }
 }
