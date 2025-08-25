@@ -60,11 +60,11 @@ class UserModel {
     }
 
     // Activar usuario
-    public function activateUser(string $email): void {
-        $sql = "UPDATE users 
-                SET user_status = 'active', verification_code = NULL, code_expires_at = NULL 
-                WHERE user_email = :email";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-    }
+    public function activateUser(string $email): bool {
+    $sql = "UPDATE users 
+            SET user_status = 'active', verification_code = NULL, code_expires_at = NULL 
+            WHERE user_email = :email";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([':email' => $email]);
+}
 }
