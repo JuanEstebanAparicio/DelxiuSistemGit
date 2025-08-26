@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2025 a las 02:03:47
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Host: 127.0.0.1
+-- Generation Time: Aug 26, 2025 at 09:17 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,44 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd_delix`
+-- Database: `bd_delix`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `insumos`
+-- Table structure for table `dishes`
+--
+
+CREATE TABLE `dishes` (
+  `id` int(255) NOT NULL,
+  `name_dish` varchar(100) NOT NULL,
+  `price` int(255) NOT NULL,
+  `category` int(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `state` enum('Activo','Inactivo') DEFAULT 'Activo',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `photo` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dish_ingredients`
+--
+
+CREATE TABLE `dish_ingredients` (
+  `id` int(255) NOT NULL,
+  `dish_id` int(11) NOT NULL,
+  `insumo_id` int(11) NOT NULL,
+  `cantidad_necesaria` decimal(10,2) NOT NULL,
+  `unidad` enum('Kg','Litro','Unidad') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `insumos`
 --
 
 CREATE TABLE `insumos` (
@@ -46,35 +77,19 @@ CREATE TABLE `insumos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `insumos`
+-- Dumping data for table `insumos`
 --
 
 INSERT INTO `insumos` (`id`, `nombre`, `cantidad`, `cantidad_minima`, `unidad`, `costo_unitario`, `categoria`, `fecha_ingreso`, `fecha_vencimiento`, `lote`, `descripcion`, `ubicacion`, `estado`, `proveedor`, `foto`) VALUES
-(1, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '6888108722bd7_modelo med parqueadero.png'),
+(1, 'queso', 78, 12, 'Kg', 23000.00, 'Otro', '2025-07-01', '2025-09-26', 'sa-65-mantecados', 'queso', 'almacenamientos la voquilla', 'Activo', 'departamento de lacteos', '68acd80655198_queso.jpg'),
 (2, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '68881152a3061_modelo med parqueadero.png'),
 (3, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '6888117bb045f_modelo med parqueadero.png'),
-(4, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '68881278df52a_modelo med parqueadero.png'),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d8e192e3e_descarga.jpg'),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d91e33695_descarga.jpg'),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894d92661d24_descarga.jpg'),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894da65af3bc_descarga.jpg'),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-29', 'LOTE-BLOQ-33', 'juan121212', 'porno', 'Activo', 'ZENU', '6894daedb40cf_descarga.jpg'),
-(0, 'Queseso', 323, 2, 'Kg', 23.00, 'Vegetal', '2025-08-13', '2025-08-14', 'QA_R100', 'juasaas', 'porno', 'Activo', 'ZENU', '6894e148134d1_descarga.jpg'),
-(0, 'Queseso', 323, 2, 'Kg', 23.00, 'Vegetal', '2025-08-13', '2025-08-14', 'QA_R100', 'juasaas', 'porno', 'Activo', 'ZENU', '6894e1b1eaea3_descarga.jpg'),
-(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', '6894e3b115a80_descarga.jpg'),
-(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', NULL),
-(0, 'Queseso', 12, 3333, 'Kg', 12.00, 'Carne', '2025-08-19', '2025-08-20', 'LOTE-BLOQ-33', 'qweqwqe', 'porno', 'Activo', 'fruco', NULL),
-(0, 'Queseso', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-20', '2025-08-27', 'QA_R100', 'wqqeqqweweqeqe', 'porno', 'Activo', 'FAVI PAN', NULL),
-(0, 'Chocolate', 12, 12, 'Unidad', 12.00, 'Bebida', '2025-08-13', '2025-08-15', 'LOTE-BLOQ-33', 'werewrwrewr', 'porno', 'Activo', 'FAVI PAN', NULL),
-(0, 'Queseso', 23, 1, 'Kg', 12.00, 'Vegetal', '2025-08-12', '2025-08-14', 'QP-001', '121sddewewqeqqe', 'porno', 'Activo', 'FAVI PAN', NULL),
-(0, 'Carne en bistec', 23, 12, 'Kg', 12.00, 'Vegetal', '2025-08-21', '2025-08-29', '12', '1WQEQEQEQ', 'porno', 'Activo', 'fruco', NULL),
-(0, 'Lechuguita', 34, 12, 'Kg', 12000.00, 'Vegetal', '2025-08-10', '2025-08-13', 'LOTE-BLOQ-33', 'lengua de res ', 'almacen 1', 'Activo', 'Carniceria del norte ', NULL),
-(0, 'Lechuguita', 54, 12, 'Kg', 3000.00, 'Vegetal', '2025-08-12', '2025-08-20', 'QA_R100', 'TOMATE', 'almacen 1', 'Activo', 'FAVI PAN', NULL);
+(4, '10', 4, 12, '', 0.00, 'Vegetal', '2025-07-01', '2025-09-26', 'sa', 'as', 'si', 'Activo', 'si', '68881278df52a_modelo med parqueadero.png');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -92,10 +107,17 @@ CREATE TABLE `users` (
   `code_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_password`, `user_restaurant`, `user_status`, `user_role`, `verification_token`, `created_at`, `reset_token`, `verification_code`, `code_expires_at`) VALUES
+(63, 'camilo', 'camilodangaud21@gmail.com', '$2y$10$EgJ48q880rCaurC3ED9XI.PAgRR3o68Oov4eoNLgFfkv1sxiBcUW.', 'barabarabara', 'pending', 'user', NULL, '2025-08-22 19:52:40', NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios_temp`
+-- Table structure for table `usuarios_temp`
 --
 
 CREATE TABLE `usuarios_temp` (
@@ -109,42 +131,91 @@ CREATE TABLE `usuarios_temp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `users`
+-- Indexes for table `dishes`
+--
+ALTER TABLE `dishes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `dish_ingredients`
+--
+ALTER TABLE `dish_ingredients`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dish_id` (`dish_id`),
+  ADD KEY `insumo_id` (`insumo_id`);
+
+--
+-- Indexes for table `insumos`
+--
+ALTER TABLE `insumos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `user_email` (`user_email`);
 
 --
--- Indices de la tabla `usuarios_temp`
+-- Indexes for table `usuarios_temp`
 --
 ALTER TABLE `usuarios_temp`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `correo_unique` (`correo`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `users`
+-- AUTO_INCREMENT for table `dishes`
+--
+ALTER TABLE `dishes`
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `dish_ingredients`
+--
+ALTER TABLE `dish_ingredients`
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `insumos`
+--
+ALTER TABLE `insumos`
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
--- AUTO_INCREMENT de la tabla `usuarios_temp`
+-- AUTO_INCREMENT for table `usuarios_temp`
 --
 ALTER TABLE `usuarios_temp`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `dish_ingredients`
+--
+ALTER TABLE `dish_ingredients`
+  ADD CONSTRAINT `dish_ingredients_ibfk_1` FOREIGN KEY (`dish_id`) REFERENCES `dishes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dish_ingredients_ibfk_2` FOREIGN KEY (`insumo_id`) REFERENCES `insumos` (`id`) ON DELETE CASCADE;
+
 DELIMITER $$
 --
--- Eventos
+-- Events
 --
 CREATE DEFINER=`root`@`localhost` EVENT `limpiar_usuarios_temp` ON SCHEDULE EVERY 30 MINUTE STARTS '2025-07-23 19:46:58' ON COMPLETION NOT PRESERVE ENABLE DO DELETE FROM usuarios_temp WHERE creado_en < NOW() - INTERVAL 30 MINUTE$$
 
