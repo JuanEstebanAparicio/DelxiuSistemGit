@@ -14,18 +14,20 @@ $resultado = $conexion->query($query);
     <link rel="stylesheet" href="../CSS/registroInsumo.css">
     <link rel="stylesheet" href="../CSS/tables.css">
     <style>
-    .modal-content { max-height: 90vh; overflow-y: auto; }
+        .modal-content { max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
 <body>
 
-<!-- MODAL para registrar y para editar) -->
+<!-- MODAL para registrar y editar -->
 <div id="formModal" class="modal hidden">
   <div class="modal-content">
     <span class="close" onclick="hideModal('formModal')">&times;</span>
     <h2 id="modalTitle">Registrar Ingrediente</h2>
-    <form id="ingredientForm" action="/Proyecto_de_aula/Controller/store/inputs_add.php" 
-          method="POST" enctype="multipart/form-data">
+    <form id="ingredientForm" 
+          action="/Proyecto_de_aula/Controller/store/inputs_add.php" 
+          method="POST" enctype="multipart/form-data"
+          onsubmit="return validarFechas()"> <!-- se valida al enviar -->
 
       <input type="hidden" name="id" id="ingredient_id">
 
@@ -59,7 +61,7 @@ $resultado = $conexion->query($query);
       </select>
 
       <label>Fecha ingreso:</label>
-      <input type="date" name="fecha_ingreso" id="fecha_ingreso" required readonly>
+      <input type="date" name="fecha_ingreso" id="fecha_ingreso" required>
 
       <label>Fecha vencimiento:</label>
       <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" required>
@@ -90,9 +92,6 @@ $resultado = $conexion->query($query);
   </div>
 </div>
 
-<script src="../JS/animations/modales.js"></script>
-<script src="../JS/validar_fechas.js"></script>
-
 <div class="content">
   <h2>Gestor de Ingredientes</h2>
   <button onclick="newIngredient()" class="modal-btn">+ Registrar Ingrediente</button>
@@ -110,74 +109,43 @@ $resultado = $conexion->query($query);
   <?php endif; ?>
 </div>
 
-  <div class="table-container">
-    <table class="styled-table">
-      <thead>
+<div class="table-container">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Nombre</th><th>Estado</th><th>Cantidad</th><th>Medida</th>
+        <th>Cantidad Min</th><th>Costo Unitario</th><th>Valor Total</th>
+        <th>Proveedor</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php while ($row = $resultado->fetch()): ?>
         <tr>
-          <th>Nombre</th><th>Estado</th><th>Cantidad</th><th>Medida</th>
-          <th>Cantidad Min</th><th>Costo Unitario</th><th>Valor Total</th>
-          <th>Proveedor</th><th>Acciones</th>
+          <td><?= $row['nombre']; ?></td>
+          <td><?= $row['estado']; ?></td>
+          <td><?= $row['cantidad']; ?></td>
+          <td><?= $row['unidad']; ?></td>
+          <td><?= $row['cantidad_minima']; ?></td>
+          <td><?= $row['costo_unitario']; ?></td>
+          <td><?= $row['valor_total']; ?></td>
+          <td><?= $row['proveedor']; ?></td>
+          <td>
+            <a href="javascript:void(0)" 
+               onclick='editIngredient(<?= json_encode($row); ?>)' 
+               class="btn btn-edit">✏️ Editar</a>
+            <a href="/Proyecto_de_aula/Controller/store/inputs_delete.php?id=<?= $row['id']; ?>" 
+              onclick="return confirm('¿Eliminar ingrediente?');"
+              class="btn btn-delete">🗑️ Eliminar</a>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $resultado->fetch()): ?>
-          <tr>
-            <td><?= $row['nombre']; ?></td>
-            <td><?= $row['estado']; ?></td>
-            <td><?= $row['cantidad']; ?></td>
-            <td><?= $row['unidad']; ?></td>
-            <td><?= $row['cantidad_minima']; ?></td>
-            <td><?= $row['costo_unitario']; ?></td>
-            <td><?= $row['valor_total']; ?></td>
-            <td><?= $row['proveedor']; ?></td>
-            <td>
-              <a href="javascript:void(0)" 
-                 onclick='editIngredient(<?= json_encode($row); ?>)' 
-                 class="btn btn-edit">✏️ Editar</a>
-              <a href="/Proyecto_de_aula/Controller/store/inputs_delete.php?id=<?= $row['id']; ?>" 
-                onclick="return confirm('¿Eliminar ingrediente?');"
-                class="btn btn-delete">🗑️ Eliminar</a>
-            </td>
-          </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </div>
+      <?php endwhile; ?>
+    </tbody>
+  </table>
 </div>
 
-<script>
-function newIngredient() {
-  document.getElementById("ingredientForm").reset();
-  document.getElementById("ingredient_id").value = "";
-  document.getElementById("modalTitle").textContent = "Registrar Ingrediente";
-  document.getElementById("submitBtn").textContent = "Registrar Ingrediente";
-  document.getElementById("ingredientForm").action = "/Proyecto_de_aula/Controller/store/inputs_add.php";
-  showModal("formModal");
-}
-
-function editIngredient(data) {
-  document.getElementById("ingredient_id").value = data.id;
-  document.getElementById("nombre").value = data.nombre;
-  document.getElementById("cantidad").value = data.cantidad;
-  document.getElementById("cantidad_minima").value = data.cantidad_minima;
-  document.getElementById("unidad").value = data.unidad;
-  document.getElementById("costo_unitario").value = data.costo_unitario;
-  document.getElementById("categoria").value = data.categoria;
-  document.getElementById("fecha_ingreso").value = data.fecha_ingreso;
-  document.getElementById("fecha_vencimiento").value = data.fecha_vencimiento;
-  document.getElementById("lote").value = data.lote;
-  document.getElementById("descripcion").value = data.descripcion;
-  document.getElementById("ubicacion").value = data.ubicacion;
-  document.getElementById("estado").value = data.estado;
-  document.getElementById("proveedor").value = data.proveedor;
-
-  document.getElementById("modalTitle").textContent = "Editar Ingrediente";
-  document.getElementById("submitBtn").textContent = "Actualizar Ingrediente";
-  document.getElementById("ingredientForm").action = "/Proyecto_de_aula/Controller/store/inputs_edit.php";
-  
-  showModal("formModal");
-}
-</script>
+<!-- Scripts -->
+<script src="../JS/animations/modales.js"></script>
+<script src="../JS/ingredient/form_handler.js"></script>
 
 </body>
 </html>
