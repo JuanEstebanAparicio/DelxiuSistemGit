@@ -1,12 +1,18 @@
 <?php
+
 $baseDir = dirname(dirname(__DIR__));
-require_once($baseDir . '../Model/Entity/products.php'); 
+require_once($baseDir . '../Model/Entity/products.php');
+require_once($baseDir . '../Model/Entity/Connection.php');
 
 class StorageCRUD {
     private $pdo;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    public function __construct($pdo = null) {
+        if ($pdo === null) {
+            $this->pdo = Connection::getConnection();
+        } else {
+            $this->pdo = $pdo;
+        }
     }
 
     // Create
