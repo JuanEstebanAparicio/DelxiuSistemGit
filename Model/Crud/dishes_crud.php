@@ -3,7 +3,7 @@ $baseDir = dirname(dirname(__DIR__));
 require_once($baseDir . '../Model/Entity/dishes.php');
 require_once($baseDir . '../Model/Entity/Connection.php');
 
-class DishesCRUD {
+class dishes_crud {
 	private $pdo;
 
 	public function __construct($pdo = null) {
@@ -20,7 +20,7 @@ class DishesCRUD {
 			throw new Exception("Los campos obligatorios no pueden estar vacíos.");
 		}
 
-		$sql = "INSERT INTO platos 
+		$sql = "INSERT INTO dishes 
 			(name_dish, price, category, description, state, created_at, photo)
 			VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -40,7 +40,7 @@ class DishesCRUD {
 
 	// Update
 	public function updateDish(dishes $dish, $id) {
-		$sql = "UPDATE platos SET 
+		$sql = "UPDATE dishes SET 
 			name_dish = ?, 
 			price = ?, 
 			category = ?, 
@@ -67,31 +67,13 @@ class DishesCRUD {
 
 	// Delete
 	public function deleteDish($id) {
-		$sql = "DELETE FROM platos WHERE id = ?";
+		$sql = "DELETE FROM dishes WHERE id = ?";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$id]);
 
 		return true;
 	}
 
-	// Read (opcional: obtener todos los platos)
-	public function getAllDishes() {
-		$sql = "SELECT * FROM platos";
-		$stmt = $this->pdo->query($sql);
-		$dishes = [];
-		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$dishes[] = new dishes(
-				$row['id'],
-				$row['name_dish'],
-				$row['price'],
-				$row['category'],
-				$row['description'],
-				$row['state'],
-				$row['created_at'],
-				$row['photo']
-			);
-		}
-		return $dishes;
-	}
+	
 }
 ?>

@@ -1,6 +1,8 @@
 <?php
 require_once('../Model/Entity/Connection.php');
 $conexion = Connection::getConnection();
+$query = "SELECT * FROM dishes";
+$resultado = $conexion->query($query);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -23,7 +25,7 @@ $conexion = Connection::getConnection();
 		<span class="close" onclick="hideModal('formModal')">&times;</span>
 	<h2 id="modalTitle">Registrar Plato</h2>
 	<form id="dishForm" action="/Proyecto_de_aula/Controller/store/dishes_add.php" 
-		  method="POST" enctype="multipart/form-data">
+		method="POST" enctype="multipart/form-data" action="/Proyecto_de_aula/Controller/kitchen/dish_add.php">
 	<input type="hidden" name="id" id="dish_id">
 
 	<label>Nombre del plato:</label>
@@ -85,14 +87,14 @@ $conexion = Connection::getConnection();
 			<tbody>
 				<?php while ($row = $resultado->fetch()): ?>
 					<tr>
-						<td><?= $row['nombre']; ?></td>
-						<td><?= $row['categoria']; ?></td>
-			<td><?= $row['precio']; ?></td>
-			<td><?= $row['estado']; ?></td>
-			<td><?= $row['descripcion']; ?></td>
+						<td><?= $row['name_dish']; ?></td>
+						<td><?= $row['category']; ?></td>
+			<td><?= $row['price']; ?></td>
+			<td><?= $row['state']; ?></td>
+			<td><?= $row['description']; ?></td>
 						<td>
-							<?php if (!empty($row['foto'])): ?>
-								<img src="<?= $row['foto']; ?>" alt="Foto" style="width:50px;height:50px;object-fit:cover;">
+							<?php if (!empty($row['phot'])): ?>
+								<img src="<?= $row['photo']; ?>" alt="Foto" style="width:50px;height:50px;object-fit:cover;">
 							<?php else: ?>
 								Sin foto
 							<?php endif; ?>
@@ -101,7 +103,7 @@ $conexion = Connection::getConnection();
 							<a href="javascript:void(0)" 
 					  onclick='editDish(<?= json_encode($row); ?>)' 
 					  class="btn btn-edit">✏️ Editar</a>
-				  <a href="/Proyecto_de_aula/Controller/store/dishes_delete.php?id=<?= $row['id']; ?>" 
+				<a href="/Proyecto_de_aula/Controller/kitchen/dish_delet.php?id=<?= $row['id']; ?>" 
 				onclick="return confirm('¿Eliminar plato?');"
 				class="btn btn-delete">🗑️ Eliminar</a>
 			</td>
@@ -112,29 +114,7 @@ $conexion = Connection::getConnection();
 	</div>
 </div>
 
-<script>
-function newDish() {
-	document.getElementById("dishForm").reset();
-	document.getElementById("dish_id").value = "";
-	document.getElementById("modalTitle").textContent = "Registrar Plato";
-	document.getElementById("submitBtn").textContent = "Registrar Plato";
-	document.getElementById("dishForm").action = "/Proyecto_de_aula/Controller/store/dishes_add.php";
-	showModal("formModal");
-}
-
-function editDish(data) {
-	document.getElementById("dish_id").value = data.id;
-	document.getElementById("nombre").value = data.nombre;
-	document.getElementById("categoria").value = data.categoria;
-	document.getElementById("precio").value = data.precio;
-	document.getElementById("descripcion").value = data.descripcion;
-	document.getElementById("estado").value = data.estado;
-	document.getElementById("modalTitle").textContent = "Editar Plato";
-	document.getElementById("submitBtn").textContent = "Actualizar Plato";
-	document.getElementById("dishForm").action = "/Proyecto_de_aula/Controller/store/dishes_edit.php";
-	showModal("formModal");
-}
-</script>
+<script src="../JS/dishes/form_handler.js"></script>
 
 </body>
 </html>

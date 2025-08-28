@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Visual Chef</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; }
+    nav { background: #2c3e50; color: white; padding: 10px; }
+    .hamburguesa { font-size: 22px; cursor: pointer; }
+    
+    .sidebar {
+      width: 200px;
+      background: #34495e;
+      color: white;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      height: 100%;
+    }
+    .sidebar button { 
+      display: block; width: 100%; margin: 5px 0; padding: 10px; 
+      background: #2c3e50; border: none; color: white; cursor: pointer;
+    }
+    .content { padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .card { border: 1px solid #ccc; border-radius: 10px; overflow: hidden; text-align: center; }
+    .card img { width: 100%; height: 120px; object-fit: cover; }
+    .card h3 { margin: 10px 0 5px; }
+    .card p { margin: 5px 0; }
+    .estado { padding: 5px; border-radius: 5px; color: white; font-weight: bold; }
+    .activo { background: green; }
+    .inactivo { background: orange; }
+    .agotado { background: red; }
+    .add-button {
+      border: 2px dashed #999;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior -->
+  <nav>
+    <span class="hamburguesa" onclick="toggleMenu()">☰ Categorías</span>
+  </nav>
+
+  <!-- Sidebar desplegable -->
+  <div class="sidebar" id="sidebar">
+    <button onclick="filtrar('Categoria 1')">Categoria 1</button>
+    <button onclick="filtrar('Categoria 2')">Categoria 2</button>
+    <button onclick="filtrar('Categoria 3')">Categoria 3</button>
+  </div>
+
+  <!-- Contenido -->
+  <div class="content">
+    <div class="grid" id="gridPlatillos"></div>
+  </div>
+
+<script>
+  const platillos = [
+    { nombre: "ESPAGUETTIS", precio: 17000, estado: "activo", img: "https://via.placeholder.com/200" },
+    { nombre: "PLATILLO EJ", precio: 17000, estado: "inactivo", img: "https://via.placeholder.com/200" },
+    { nombre: "ENSALADA", precio: 12000, estado: "agotado", img: "https://via.placeholder.com/200" }
+  ];
+
+  function renderPlatillos() {
+    const grid = document.getElementById("gridPlatillos");
+    grid.innerHTML = "";
+    platillos.forEach(p => {
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${p.img}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p>$${p.precio.toLocaleString()}</p>
+          <span class="estado ${p.estado}">${p.estado.toUpperCase()}</span>
+        </div>
+      `;
+    });
+    grid.innerHTML += `<div class="card add-button" onclick="crearPlatillo()">+ Crear Platillo</div>`;
+  }
+
+  function crearPlatillo() {
+    alert("Aquí abres un formulario para crear un nuevo platillo 🍽️");
+  }
+
+  function filtrar(categoria) {
+    alert("Filtrando platillos por " + categoria);
+  }
+
+  function toggleMenu() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.style.display = sidebar.style.display === "flex" ? "none" : "flex";
+  }
+
+  renderPlatillos();
+</script>
+</body>
+</html>
