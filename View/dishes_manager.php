@@ -93,7 +93,7 @@ $resultado = $conexion->query($query);
 			<td><?= $row['state']; ?></td>
 			<td><?= $row['description']; ?></td>
 						<td>
-							<?php if (!empty($row['phot'])): ?>
+							<?php if (!empty($row['photo'])): ?>
 								<img src="<?= $row['photo']; ?>" alt="Foto" style="width:50px;height:50px;object-fit:cover;">
 							<?php else: ?>
 								Sin foto
