@@ -43,6 +43,16 @@ class EmailService
             $mail->Username = $this->config['smtp_user'];
             $mail->Password = $this->config['smtp_pass'];
             $mail->Port     = (int)$this->config['smtp_port'];
+            
+               // OPCIÓN para ignorar SSL (solo pruebas locales)
+
+               $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
 
             $secure = strtolower($this->config['smtp_secure'] ?? 'tls');
             if ($secure === 'ssl') {
