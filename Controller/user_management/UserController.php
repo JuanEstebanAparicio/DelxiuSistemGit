@@ -52,8 +52,12 @@ class UserController {
             }
 
             // 🚀 Guardar en DB el mismo código que se envió
+            try {
             $this->userModel->saveVerificationCode($userId, $sentCode);
-
+            } catch (Exception $e) {
+              echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+               return;
+            }
             // ✅ Respuesta exitosa con el correo
             echo json_encode([
                 'ok'     => true,
