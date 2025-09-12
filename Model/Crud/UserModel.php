@@ -8,8 +8,19 @@ class UserModel {
         $this->db = $db;
     }
 
-    public function createUser(User $user): int {
-       // 1. Buscar si el correo ya existe
+public function createUser(User $user): int {
+    // ✅ 1. Tomamos la contraseña en claro desde el objeto
+    $rawPassword = $user->getUserPassword() ?? '';
+
+    // Validar longitud mínima
+    if (strlen($rawPassword) < 6) {
+        throw new Exception('La contraseña debe tener al menos 6 caracteres.');
+    }
+
+    // ✅ 2. Hasheamos la contraseña antes de guardarla
+    $hashedPassword = password_hash($rawPassword, PASSWORD_DEFAULT);
+
+    // ✅ 3. Revisar si el correo ya existe
     $sql = "SELECT user_id, user_status FROM users WHERE user_email = :email LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->execute([':email' => $user->getUserEmail()]);
@@ -29,7 +40,7 @@ class UserModel {
             $stmt = $this->db->prepare($update);
             $stmt->execute([
                 ':name'       => $user->getUserName(),
-                ':password'   => $user->getUserPassword(),
+                ':password'   => $hashedPassword, // 🔒 Guardamos el hash
                 ':restaurant' => $user->getUserRestaurant(),
                 ':id'         => $row['user_id']
             ]);
@@ -40,14 +51,14 @@ class UserModel {
         throw new Exception("Este correo ya tiene una cuenta registrada.");
     }
 
-    // 2. Si no existe, insertar normalmente
+    // ✅ 4. Si no existe, insertar normalmente
     $sql = "INSERT INTO users (user_name, user_email, user_password, user_restaurant, user_status, user_role, created_at) 
             VALUES (:name, :email, :password, :restaurant, :status, :role, :created)";
     $stmt = $this->db->prepare($sql);
     $stmt->execute([
         ':name'       => $user->getUserName(),
         ':email'      => $user->getUserEmail(),
-        ':password'   => $user->getUserPassword(),
+        ':password'   => $hashedPassword, // 🔒 Guardamos el hash
         ':restaurant' => $user->getUserRestaurant(),
         ':status'     => $user->getUserStatus(),
         ':role'       => $user->getUserRole(),
