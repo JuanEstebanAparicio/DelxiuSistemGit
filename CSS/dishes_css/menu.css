@@ -1,0 +1,35 @@
+body { font-family: Arial, sans-serif; margin: 0; }
+    nav { background: #2c3e50; color: white; padding: 10px; }
+    .hamburger { font-size: 22px; cursor: pointer; }
+    
+    .sidebar {
+      width: 200px;
+      background: #34495e;
+      color: white;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      height: 100%;
+    }
+    .sidebar button { 
+      display: block; width: 100%; margin: 5px 0; padding: 10px; 
+      background: #2c3e50; border: none; color: white; cursor: pointer;
+    }
+    .content { padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .card { border: 1px solid #ccc; border-radius: 10px; overflow: hidden; text-align: center; }
+    .card img { width: 100%; height: 120px; object-fit: cover; }
+    .card h3 { margin: 10px 0 5px; }
+    .card p { margin: 5px 0; }
+    .state { padding: 5px; border-radius: 5px; color: white; font-weight: bold; }
+    .active { background: green; }
+    .inactive { background: orange; }
+    .solt_out { background: red; }
+    .add-button {
+      border: 2px dashed #999;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer;
+    }
