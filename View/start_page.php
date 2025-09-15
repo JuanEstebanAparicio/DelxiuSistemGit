@@ -137,14 +137,9 @@
 
     <input type="hidden" id="correo_verificar" />
 
-    <div class="code-input-container">
-      <input type="text" maxlength="1" class="code-digit" />
-      <input type="text" maxlength="1" class="code-digit" />
-      <input type="text" maxlength="1" class="code-digit" />
-      <input type="text" maxlength="1" class="code-digit" />
-      <input type="text" maxlength="1" class="code-digit" />
-      <input type="text" maxlength="1" class="code-digit" />
-    </div>
+    <!-- INPUT ÚNICO para el código (6 dígitos) -->
+<input type="text" id="verification_code_input" maxlength="6" placeholder="Ingresa tu código"   oninput="this.value=this.value.replace(/[^0-9]/g,'')"  />
+
 
     <button onclick="verificarCodigo()">Verificar Código</button>
     <button onclick="volverARegistro()" style="margin-top: 10px; background-color: #ccc; color: #333;">

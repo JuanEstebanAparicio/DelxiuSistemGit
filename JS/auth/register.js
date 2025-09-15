@@ -27,20 +27,20 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
 async function verificarCodigo() {
     const correo = document.getElementById('correo_verificar').value;
+    const codeInput = document.getElementById('verification_code_input');
+    const digits = (codeInput.value || '').replace(/\D/g, '').slice(0, 6);
 
-    // Unimos los 6 dígitos escritos en el modal
-    const digits = Array.from(document.querySelectorAll('.code-digit'))
-                        .map(input => input.value.trim())
-                        .join('');
+    const msg = document.getElementById('mensajeCodigo');
 
     if (digits.length !== 6) {
-        document.getElementById('mensajeCodigo').textContent = "Debes ingresar los 6 dígitos.";
+        msg.style.color = "red";
+        msg.textContent = "Debes ingresar los 6 dígitos.";
         return;
     }
 
     try {
         const formData = new FormData();
-        formData.append('action', 'verify'); // 🔹 Para que el controlador sepa que es verificación
+        formData.append('action', 'verify');
         formData.append('user_email', correo);
         formData.append('verification_code', digits);
 
@@ -52,22 +52,22 @@ async function verificarCodigo() {
         const result = await response.json();
 
         if (!result.ok) {
-            document.getElementById('mensajeCodigo').style.color = "red";
-            document.getElementById('mensajeCodigo').textContent = result.error || "Código inválido";
+            msg.style.color = "red";
+            msg.textContent = result.error || "Código inválido";
         } else {
-            document.getElementById('mensajeCodigo').style.color = "green";
-            document.getElementById('mensajeCodigo').textContent = "✅ Usuario verificado con éxito";
+            msg.style.color = "green";
+            msg.textContent = "✅ Usuario verificado con éxito";
 
-            // 🚀 Opcional: cerrar modal después de 2s y mostrar login
             setTimeout(() => {
                 hideModal('modalCodigo');
-                // Si tienes modal de login, aquí lo podrías abrir:
+                hideModal('modalRegister');
+                // Opcional: mostrar login
                 // showModal('modalLogin');
-            }, 4000);
+            }, 2000);
         }
     } catch (error) {
         console.error(error);
-        document.getElementById('mensajeCodigo').style.color = "red";
-        document.getElementById('mensajeCodigo').textContent = "Error de conexión con el servidor.";
+        msg.style.color = "red";
+        msg.textContent = "Error de conexión con el servidor.";
     }
 }
