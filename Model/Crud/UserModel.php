@@ -1,8 +1,10 @@
 <?php
+error_log("Cargando UserModel desde: " . __FILE__);
 require_once __DIR__ . '/../Entity/User.php';
 
 class UserModel {
-    private $db;
+    
+        private $db;
 
     public function __construct($db) {
         $this->db = $db;
@@ -96,4 +98,47 @@ class UserModel {
     $stmt = $this->db->prepare($sql);
     return $stmt->execute([':email' => $email]);
 }
+
+// Guardar token de recuperación
+public function saveRecoveryToken(string $email, string $token): bool {
+    $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    $sql = "UPDATE users 
+            SET recovery_token = :token, recovery_expires_at = :expires 
+            WHERE user_email = :email";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        ':token'   => $token,
+        ':expires' => $expiresAt,
+        ':email'   => $email
+    ]);
+}
+
+// Verificar token de recuperación
+public function verifyRecoveryToken(string $token): ?string {
+    $sql = "SELECT user_email 
+            FROM users 
+            WHERE recovery_token = :token AND recovery_expires_at > NOW()";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':token' => $token]);
+    $row = $stmt->fetch();
+    return $row ? $row['user_email'] : null;
+}
+
+// Actualizar contraseña y limpiar token
+public function updatePassword(string $email, string $hashedPassword): bool {
+    $sql = "UPDATE users 
+            SET user_password = :pass, recovery_token = NULL, recovery_expires_at = NULL 
+            WHERE user_email = :email";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        ':pass'  => $hashedPassword,
+        ':email' => $email
+    ]);
+}
+
+
+
+
+
 }

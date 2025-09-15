@@ -1,4 +1,5 @@
 <?php
+error_log("Cargando EmailService desde: " . __FILE__);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -95,4 +96,62 @@ class EmailService
             
         }
     }
+
+    public function sendRecoveryEmail(string $toEmail, string $nombre, string $token): bool
+{
+    $link = "http://tu-dominio.com/restablecer.php?token=" . urlencode($token);
+
+    $mail = new PHPMailer(true);
+    try {
+        $mail->SMTPDebug   = 0;
+        $mail->Debugoutput = 'error_log';
+
+        $mail->isSMTP();
+        $mail->Host     = $this->config['smtp_host'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $this->config['smtp_user'];
+        $mail->Password = $this->config['smtp_pass'];
+        $mail->Port     = (int)$this->config['smtp_port'];
+
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ];
+
+        $secure = strtolower($this->config['smtp_secure'] ?? 'tls');
+        if ($secure === 'ssl') {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        } elseif ($secure === 'tls') {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        }
+
+        $mail->setFrom(
+            $this->config['from_email'] ?? $this->config['smtp_user'],
+            $this->config['from_name']  ?? 'DelixiuSystem'
+        );
+        $mail->addAddress($toEmail);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Recuperación de contraseña - DelixiuSystem';
+        $mail->Body    = "
+            <p>Hola {$nombre},</p>
+            <p>Para restablecer tu contraseña haz clic en el siguiente enlace:</p>
+            <p><a href='{$link}'>Restablecer contraseña</a></p>
+            <p>Este enlace expirará en 1 hora.</p>
+        ";
+        $mail->AltBody = "Para restablecer tu contraseña visita: {$link}";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al enviar correo de recuperación: " . ($mail->ErrorInfo ?: $e->getMessage()));
+        return false;
+    }
+}
+
+
+
 }

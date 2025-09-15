@@ -34,7 +34,7 @@
 
 
 
-<!-- Modal para Iniciar sesión -->
+<!-- Tu modal de login -->
 <div id="modalLogin" class="modal hidden">
   <div class="modal-content">
     <button class="close" onclick="hideModal('modalLogin')">&times;</button>
@@ -55,10 +55,33 @@
     </form>
 
     <div style="margin-top: 10px; text-align: center;">
-      <a href="#" onclick="showModal('modalRecuperar')">¿Olvidaste tu contraseña?</a>
+       <button type="button" class="btn3" onclick="hideModal('modalLogin'); showModal('modalRecuperar')">
+    ¿Olvidaste tu contraseña?
+  </button>
     </div>
   </div>
 </div>
+
+<!-- Modal para Recuperar contraseña -->
+<div id="modalRecuperar" class="modal hidden">
+  <div class="modal-content">
+    <button class="close" onclick="hideModal('modalRecuperar')">&times;</button>
+    <h2>Recuperar Contraseña</h2>
+    <form id="formRecuperar" style="display: flex; flex-direction: column; align-items: center;">
+  <label>Ingrese su correo registrado</label>
+  <input type="email" name="correo_recuperar" placeholder="Correo" required style="width: 100%; max-width: 300px;" />
+  <button type="submit" class="modal-btn" style="margin-top: 10px;">Enviar código</button>
+</form>
+
+
+    <div style="margin-top: 10px; text-align: center;">
+      <button type="button" class="btn3" onclick="hideModal('modalRecuperar'); showModal('modalLogin')">
+        Volver a Iniciar Sesión
+      </button>
+    </div>
+  </div>
+</div>
+
 
 
 <!-- Modal for Registration -->
@@ -67,14 +90,13 @@
     <button class="close" onclick="hideModal('modalRegister')">&times;</button>
     <h2>Iniciar Sesion</h2>
     <form id="registerForm" method="POST">
-
-
-      Nombre de usuario
+      
+    Nombre de usuario
       <input type="text" name="user_name" id="user_name" placeholder="Username" required />
-
+     
       Correo
       <input type="email" name="user_email" id="user_email" placeholder="Email" required />
-
+     
       Nombre de restaurante
       <input type="text" name="user_restaurant" id="user_restaurant" placeholder="Restaurant Name" required />
 
@@ -96,16 +118,10 @@
     👁️
   </button>
 </div>
-
       Confirmar Contraseña
-        
       <input type="password" id="confirm_password" placeholder="Confirm Password" required />
-
-
       <p id="errorPass" style="color: red; display: none;">❌ Passwords do not match</p>
-
       <button type="submit" class="modal-btn">Create Account</button>
-
     </form>
   </div>
 
@@ -139,19 +155,6 @@
   </div>
 </div>
 
-<!-- Modal Recuperar Contraseña -->
-<div id="modalRecuperar" class="modal hidden">
-  <div class="modal-content">
-    <button class="close" onclick="hideModal('modalRecuperar')">&times;</button>
-    <h2>Recuperar Contraseña</h2>
-    <form id="formRecuperar">
-      <label>Correo registrado</label>
-      <input type="email" id="recuperarCorreo" name="correo" placeholder="Ingresa tu correo" required />
-      <button type="submit" class="modal-btn">Enviar enlace de recuperación</button>
-    </form>
-    <div id="recuperarMensaje" style="margin-top: 10px; color: green; display: none;"></div>
-  </div>
-</div>
 
 <!-- Modal de alerta genérica -->
 <div id="alertModal" class="modal hidden">
@@ -161,13 +164,13 @@
   </div>
 </div>
 
-  
-<!-- Al final de tu HTML, justo antes del </body> -->
 
 
 <script src="../JS/animations/hidePassword.js"></script>
 <script src="../JS/animations/modales.js"></script>
 <script src="../JS/auth/register.js"></script>
+
+
 
 </body>
 </html>
